@@ -2,90 +2,97 @@ import React from 'react';
 
 const MenuCard = ({ item, onAddToCart, count }) => {
   return (
-    <div className="group relative bg-white rounded-[2rem] sm:rounded-[2.5rem] shadow-[0_8px_30px_-15px_rgba(0,0,0,0.1)] border border-gray-100/50 overflow-hidden hover:shadow-[0_20px_50px_-12px_rgba(234,88,12,0.15)] transition-all duration-700 flex flex-col h-full transform hover:-translate-y-2">
+    <div className="group relative bg-[#FCFBFA] rounded-[2.5rem] overflow-hidden transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.12)] border border-stone-100 flex flex-col h-full transform hover:-translate-y-3">
       
-      {/* 1. قسم الصورة - نسبة عرض متغيرة للتوافق */}
-      <div className="relative w-full aspect-square overflow-hidden bg-gray-50">
+      {/* 1. قسم الصورة - مع تأثير زووم ناعم */}
+      <div className="relative w-full aspect-[4/5] overflow-hidden">
         <img 
           src={item.image} 
           alt={item.name} 
           loading="lazy"
-          className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110"
+          className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-110"
         />
 
-        {/* طبقة حماية للنصوص فوق الصورة */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 sm:opacity-0 group-hover:opacity-80 transition-opacity duration-500" />
+        {/* تدرج ظلي علوي وسفلي للفخامة */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-stone-900/40 opacity-40 group-hover:opacity-60 transition-opacity duration-700" />
         
-        {/* شارة السعر: أصغر في الجوال لتوفير مساحة */}
-        <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
-          <div className="bg-white/95 backdrop-blur-md px-3 py-1 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl shadow-xl border border-white/20 flex flex-col items-center group-hover:bg-orange-600 group-hover:text-white transition-all duration-300">
-            <span className="text-lg sm:text-xl font-black leading-none">{item.price}</span>
-            <span className="text-[8px] sm:text-[10px] font-bold uppercase tracking-tighter">DH</span>
+        {/* شارة السعر - تصميم Minimalist */}
+        <div className="absolute top-6 left-6 z-10">
+          <div className="backdrop-blur-xl bg-white/80 px-4 py-2 rounded-2xl shadow-sm border border-white/50 flex flex-col items-center">
+            <span className="text-stone-900 text-lg font-light tracking-tight">
+              {item.price}<span className="text-[10px] ml-0.5 font-medium opacity-70">DH</span>
+            </span>
           </div>
         </div>
 
-        {/* وسم التميز: يختفي النص في الهواتف الصغيرة جداً ويبقى الرمز */}
+        {/* وسم التميز - تصميم رفيع */}
         {item.popular && (
-          <div className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-orange-500 text-white px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-wider shadow-lg flex items-center gap-1 sm:gap-2 border border-orange-400/50">
-            <span className="animate-pulse text-xs">★</span>
-            <span className="hidden xs:inline">الأكثر تميزاً</span>
+          <div className="absolute top-6 right-6 bg-amber-500/90 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] shadow-lg flex items-center gap-2">
+            <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+            Most Loved
           </div>
         )}
       </div>
 
-      {/* 2. قسم المحتوى - مسافات مرنة (Responsive Padding) */}
-      <div className="p-4 sm:p-6 flex flex-col flex-grow bg-white z-20 -mt-5 sm:-mt-8 rounded-t-[1.5rem] sm:rounded-t-[2rem] relative shadow-[0_-15px_30px_-10px_rgba(0,0,0,0.05)]">
+      {/* 2. قسم المحتوى - تركيز على التايبوجرافي */}
+      <div className="p-8 flex flex-col flex-grow relative bg-white">
         
-        <span className="text-orange-600 text-[8px] sm:text-[10px] font-black uppercase tracking-[0.15em] mb-1 sm:mb-2 block">
-           فاس الأصالة • Fes Tradition
+        {/* خط زخرفي علوي صغير */}
+        <div className="w-8 h-[1px] bg-amber-500 mb-4 transition-all duration-700 group-hover:w-16" />
+
+        <span className="text-amber-700 text-[9px] font-bold uppercase tracking-[0.3em] mb-2 block opacity-80">
+          Fes Authentic Collection
         </span>
 
-        <h3 className="text-base sm:text-xl font-black text-gray-900 mb-1.5 sm:mb-3 leading-tight tracking-tight group-hover:text-orange-600 transition-colors duration-300 line-clamp-1">
+        <h3 className="text-2xl font-serif text-stone-800 mb-3 leading-tight transition-colors duration-500 group-hover:text-amber-700">
           {item.name}
         </h3>
         
-        <p className="text-gray-500 text-[11px] sm:text-sm leading-relaxed mb-4 sm:mb-8 line-clamp-2 font-medium">
+        <p className="text-stone-500 text-sm leading-relaxed mb-8 font-light italic">
           {item.description}
         </p>
 
-        {/* 3. منطقة التحكم والطلب - أزرار سهلة اللمس (Touch Friendly) */}
-        <div className="mt-auto pt-3 border-t border-gray-50">
+        {/* 3. منطقة التحكم - أزرار نحيفة وأنيقة */}
+        <div className="mt-auto">
           {count > 0 ? (
-            <div className="flex items-center justify-between bg-gray-50 rounded-[1.2rem] sm:rounded-[1.5rem] p-1 border border-gray-100 shadow-inner">
+            <div className="flex items-center justify-between bg-stone-50 rounded-2xl p-1.5 border border-stone-100">
               <button 
                 onClick={(e) => { e.stopPropagation(); onAddToCart(item, -1); }}
-                className="w-9 h-9 sm:w-12 sm:h-12 flex items-center justify-center bg-white text-gray-900 rounded-lg sm:rounded-xl shadow-sm font-black text-lg sm:text-xl hover:bg-red-50 hover:text-red-600 transition-all active:scale-90 border border-transparent hover:border-red-100"
+                className="w-10 h-10 flex items-center justify-center bg-white text-stone-600 rounded-xl shadow-sm hover:text-red-500 transition-all active:scale-90 border border-stone-100"
               >
-                −
+                <span className="text-xl font-light">−</span>
               </button>
               
               <div className="flex flex-col items-center">
-                <span className="font-black text-gray-900 text-base sm:text-xl leading-none">{count}</span>
-                <span className="text-[7px] sm:text-[8px] font-bold text-gray-400 uppercase mt-0.5">الكمية</span>
+                <span className="font-medium text-stone-800 text-lg leading-none">{count}</span>
+                <span className="text-[8px] font-bold text-stone-400 uppercase tracking-widest mt-1">Qty</span>
               </div>
 
               <button 
                 onClick={(e) => { e.stopPropagation(); onAddToCart(item, 1); }}
-                className="w-9 h-9 sm:w-12 sm:h-12 flex items-center justify-center bg-orange-600 text-white rounded-lg sm:rounded-xl shadow-lg font-black text-lg sm:text-xl hover:bg-orange-700 transition-all active:scale-90"
+                className="w-10 h-10 flex items-center justify-center bg-stone-800 text-white rounded-xl shadow-md hover:bg-amber-600 transition-all active:scale-90"
               >
-                +
+                <span className="text-xl font-light">+</span>
               </button>
             </div>
           ) : (
             <button
               onClick={() => onAddToCart(item, 1)}
-              className="group/btn relative overflow-hidden w-full bg-gray-900 text-white py-3 sm:py-4 rounded-[1.2rem] sm:rounded-[1.5rem] font-black text-[10px] sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 sm:gap-4 hover:bg-orange-600 active:scale-95 shadow-xl shadow-gray-200"
+              className="group/btn relative w-full overflow-hidden bg-stone-900 text-white py-4 rounded-2xl font-medium text-xs uppercase tracking-[0.2em] transition-all duration-500 hover:bg-amber-700 hover:shadow-2xl hover:shadow-amber-900/20 active:scale-[0.98]"
             >
-              <span className="relative z-10">إضافة للطلب</span>
-              <div className="relative z-10 bg-white/10 p-1 rounded-md sm:rounded-lg">
-                <svg width="14" height="14" className="sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M16 10a4 4 0 0 1-8 0"/>
+              <span className="relative z-10 flex items-center justify-center gap-3">
+                <span>Add to Selection</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="transition-transform duration-500 group-hover/btn:translate-x-1">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
-              </div>
+              </span>
             </button>
           )}
         </div>
       </div>
+
+      {/* لمسة نهائية: حدود مضيئة عند التحويم */}
+      <div className="absolute inset-0 border-[1px] border-amber-500/0 group-hover:border-amber-500/10 rounded-[2.5rem] transition-all duration-700 pointer-events-none" />
     </div>
   );
 };

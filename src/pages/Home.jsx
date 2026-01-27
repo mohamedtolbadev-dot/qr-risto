@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// استيراد Swiper
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, EffectFade } from 'swiper/modules';
 import 'swiper/css';
@@ -16,11 +15,22 @@ const Home = () => {
   const [activeCategory, setActiveCategory] = useState('الكل');
   const [cart, setCart] = useState([]);
 
-  // صور السلايدر (أطباق مغربية مميزة)
   const sliderImages = [
-    "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?q=80&w=1600",
-    "https://cdn.youcan.shop/stores/980bd1d3766222ef4184b517eba9d88a/products/DiHYloqoyt7soiqUcryEg9wDmRwr2iamZmXPZuSH_lg.jpg",
-    "https://al3omk.com/wp-content/uploads/2020/05/image-1489336765.jpg"
+    {
+      url: "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?q=80&w=1600",
+      title: "ضيافة ملكية",
+      subtitle: "استمتع بأرقى فنون الطبخ المغربي"
+    },
+    {
+      url: "https://cdn.youcan.shop/stores/980bd1d3766222ef4184b517eba9d88a/products/DiHYloqoyt7soiqUcryEg9wDmRwr2iamZmXPZuSH_lg.jpg",
+      title: "أصالة المذاق",
+      subtitle: "نكهات مغربية عريقة بلمسة عصرية"
+    },
+    {
+      url: "https://al3omk.com/wp-content/uploads/2020/05/image-1489336765.jpg",
+      title: "سحر التوابل",
+      subtitle: "من فاس إلى مراكش.. رحلة في قلب التقاليد"
+    }
   ];
 
   const handleAddToCart = (item, amount = 1) => {
@@ -42,169 +52,125 @@ const Home = () => {
     : menuData.filter(item => item.category === activeCategory);
 
   return (
-    <div className="min-h-screen bg-[#fdfaf7] bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')] bg-fixed">
+    <div className="min-h-screen bg-[#FBF9F6] selection:bg-amber-200 selection:text-amber-900 overflow-x-hidden">
+      {/* خلفية بنمط أرابيسك خفيف جداً */}
+      <div className="fixed inset-0 bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')] opacity-[0.03] pointer-events-none z-0"></div>
+
       <Navbar />
 
-      {/* --- Section 1: Hero Slider --- */}
-      <div className="relative h-[50vh] sm:h-[55vh] md:h-[60vh] lg:h-[70vh] overflow-hidden">
+      {/* --- Section 1: Hero Slider - التنسيق الفاخر --- */}
+      <section className="relative h-[65vh] lg:h-[85vh] w-full overflow-hidden shadow-2xl">
         <Swiper
           modules={[Autoplay, Pagination, EffectFade]}
           effect="fade"
-          autoplay={{ delay: 4000 }}
-          pagination={{ clickable: true }}
+          speed={1500}
+          autoplay={{ delay: 5000, disableOnInteraction: false }}
+          pagination={{ clickable: true, dynamicBullets: true }}
           className="h-full w-full"
         >
-          {sliderImages.map((img, index) => (
+          {sliderImages.map((slide, index) => (
             <SwiperSlide key={index}>
-              <div className="relative h-full w-full">
-                <img src={img} className="w-full h-full object-cover" alt="Moroccan Dish" />
-                {/* تدرج لوني محسّن */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent flex items-center justify-center">
-                  <div className="text-center text-white px-4 sm:px-6 md:px-8">
-                    <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-3 md:mb-4 drop-shadow-2xl leading-tight animate-fade-in">
-                      تذوق الأصالة المغربية
+              <div className="relative h-full w-full group">
+                <img 
+                  src={slide.url} 
+                  className="w-full h-full object-cover transition-transform duration-[10s] group-hover:scale-110" 
+                  alt={slide.title} 
+                />
+                {/* Overlay متدرج ملكي */}
+                <div className="absolute inset-0 bg-gradient-to-b from-stone-900/40 via-transparent to-stone-950/90 flex items-center justify-center">
+                  <div className="text-center px-4 max-w-4xl">
+                    <div className="inline-block w-12 h-[1px] bg-amber-400 mb-6 animate-pulse"></div>
+                    <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif text-white mb-6 drop-shadow-2xl animate-[fadeInUp_1s_ease-out]">
+                      {slide.title}
                     </h2>
-                    <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-medium opacity-90 drop-shadow-lg">أطباق تقليدية بلمسة عصرية</p>
+                    <p className="text-lg md:text-2xl text-amber-50/90 font-light tracking-[0.1em] mb-8 animate-[fadeInUp_1.2s_ease-out]">
+                      {slide.subtitle}
+                    </p>
+                    <button className="bg-transparent border border-amber-400/50 text-amber-400 hover:bg-amber-400 hover:text-stone-900 px-8 py-3 rounded-full transition-all duration-500 uppercase tracking-widest text-xs font-bold backdrop-blur-sm">
+                      اكتشف القائمة
+                    </button>
                   </div>
                 </div>
               </div>
             </SwiperSlide>
           ))}
         </Swiper>
+      </section>
+
+      {/* --- Section 2: Filters - شريط لاصق أنيق --- */}
+      <div className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-stone-100 shadow-sm transition-all duration-500">
+        <div className="max-w-7xl mx-auto">
+          <CategoryFilter 
+            categories={categories}
+            activeCategory={activeCategory}
+            onCategoryChange={setActiveCategory}
+          />
+        </div>
       </div>
 
-      {/* --- Section 2: Filters --- */}
-      <div className="sticky top-0 z-40">
-        <CategoryFilter 
-          categories={categories}
-          activeCategory={activeCategory}
-          onCategoryChange={setActiveCategory}
-        />
-      </div>
-
-      {/* --- Section 3: Menu Grid --- */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-12">
-        {/* عنوان القسم محسّن */}
-        <div className="relative mb-8 md:mb-10">
-          <div className="flex flex-col sm:flex-row items-start sm:items-baseline justify-between gap-3 sm:gap-0 border-r-4 border-orange-500 pr-3 sm:pr-4">
-            <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 italic">
+      {/* --- Section 3: Menu Grid - تنسيق المحتوى --- */}
+      <main className="container mx-auto px-6 lg:px-12 py-16 relative z-10">
+        
+        {/* رأس القسم الفاخر */}
+        <div className="flex flex-col items-center mb-16">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="h-[1px] w-8 md:w-16 bg-amber-600/30"></div>
+            <span className="text-amber-700 text-[10px] md:text-xs font-bold uppercase tracking-[0.4em]">
+              Selected Collection
+            </span>
+            <div className="h-[1px] w-8 md:w-16 bg-amber-600/30"></div>
+          </div>
+          
+          <div className="flex items-baseline gap-6 mb-2">
+            <h3 className="text-4xl md:text-5xl font-serif text-stone-800">
               {activeCategory}
             </h3>
-            <span className="text-sm sm:text-base text-orange-600 font-bold bg-orange-50 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-sm">
-              {filteredMenu.length} طبق
+            <span className="text-stone-400 font-light text-xl">/</span>
+            <span className="text-stone-400 text-sm font-light tracking-widest">
+              {filteredMenu.length} SPECIMENS
             </span>
           </div>
-          {/* خط زخرفي */}
-          <div className="mt-3 sm:mt-4 h-1 w-20 sm:w-24 bg-gradient-to-r from-orange-500 to-transparent rounded-full"></div>
+          <div className="w-12 h-[2px] bg-amber-500 mt-4"></div>
         </div>
 
         {filteredMenu.length === 0 ? (
-          <div className="text-center py-16 sm:py-20 bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-lg border-2 border-dashed border-gray-300 italic mx-2 sm:mx-0">
-            <div className="text-5xl sm:text-6xl mb-3 sm:mb-4">🍽️</div>
-            <p className="text-lg sm:text-xl text-gray-600 px-4">قريباً.. أطباق جديدة في هذا القسم</p>
+          <div className="flex flex-col items-center justify-center py-32 bg-stone-50/50 rounded-[3rem] border border-stone-100 italic">
+            <div className="relative w-20 h-20 mb-6">
+                <div className="absolute inset-0 bg-amber-100 rounded-full animate-ping opacity-20"></div>
+                <div className="relative flex items-center justify-center w-full h-full bg-white rounded-full shadow-sm text-3xl">🍽️</div>
+            </div>
+            <p className="text-stone-400 text-lg tracking-wide">نعمل حالياً على إعداد أطباق استثنائية لهذا القسم</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
             {filteredMenu.map(item => (
-              <MenuCard 
-                key={item.id}
-                item={item}
-                onAddToCart={handleAddToCart}
-                count={cart.find(c => c.id === item.id)?.quantity || 0}
-              />
+              <div key={item.id} className="animate-[fadeIn_0.5s_ease-out]">
+                <MenuCard 
+                  item={item}
+                  onAddToCart={handleAddToCart}
+                  count={cart.find(c => c.id === item.id)?.quantity || 0}
+                />
+              </div>
             ))}
           </div>
         )}
-      </div>
+      </main>
 
-      {/* --- Section 4: Sidebar Cart --- */}
+      {/* --- Section 4: Sidebar Cart & Decor --- */}
       <CartSidebar 
         cart={cart} 
         onClearCart={() => setCart([])} 
         onUpdateQuantity={(id, amt) => handleAddToCart({id}, amt)} 
       />
 
-      {/* Footer محسّن مع روابط التواصل */}
-      <footer className="relative py-12 sm:py-14 md:py-16 bg-gradient-to-b from-transparent to-orange-50/30">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          {/* شعار المطعم */}
-          <div className="text-center mb-6 sm:mb-8">
-            <h4 className="text-2xl sm:text-3xl font-black text-orange-600 mb-2">مطعم الزاوية</h4>
-            <p className="text-sm sm:text-base text-gray-600 font-medium">أصالة المطبخ المغربي</p>
+      {/* Footer بسيط وفخم */}
+      <footer className="py-12 border-t border-stone-100 flex flex-col items-center justify-center bg-white">
+          <div className="text-amber-800 font-serif text-2xl mb-4 italic">
+            Le Palais Marocain
           </div>
-
-          {/* أيقونات التواصل الاجتماعي */}
-          <div className="flex justify-center items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-            {/* Facebook */}
-            <a 
-              href="https://facebook.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="group flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 hover:bg-blue-600"
-            >
-              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-              </svg>
-            </a>
-
-            {/* Instagram */}
-            <a 
-              href="https://instagram.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="group flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 hover:bg-gradient-to-br hover:from-purple-600 hover:via-pink-600 hover:to-orange-500"
-            >
-              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-pink-600 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-              </svg>
-            </a>
-
-            {/* Google Maps */}
-            <a 
-              href="https://maps.google.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="group flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 hover:bg-red-600"
-            >
-              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 0C7.589 0 4 3.589 4 8c0 5.25 8 16 8 16s8-10.75 8-16c0-4.411-3.589-8-8-8zm0 11c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"/>
-              </svg>
-            </a>
-          </div>
-
-          {/* معلومات الاتصال */}
-          <div className="text-center space-y-2 mb-6 sm:mb-8">
-            <p className="text-sm sm:text-base text-gray-600 flex items-center justify-center gap-2 px-4">
-              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-              </svg>
-              <span dir="ltr" className="font-medium">+212 XXX-XXXXXX</span>
-            </p>
-            <p className="text-sm sm:text-base text-gray-600 flex items-center justify-center gap-2 px-4">
-              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-              </svg>
-              <span className="font-medium">فاس، المغرب</span>
-            </p>
-          </div>
-
-          {/* خط فاصل زخرفي */}
-          <div className="flex items-center justify-center mb-5 sm:mb-6">
-            <div className="h-px w-16 sm:w-20 bg-gradient-to-r from-transparent via-orange-300 to-transparent"></div>
-            <div className="mx-3 sm:mx-4 text-orange-500">
-              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-              </svg>
-            </div>
-            <div className="h-px w-16 sm:w-20 bg-gradient-to-l from-transparent via-orange-300 to-transparent"></div>
-          </div>
-
-          {/* حقوق النشر */}
-          <p className="text-center text-gray-400 text-xs sm:text-sm font-medium px-4">
-            © 2024 مطعم الزاوية - جميع الحقوق محفوظة
+          <p className="text-stone-400 text-[10px] tracking-[0.2em] uppercase">
+            © 2024 تجربة طعام استثنائية • فاس - المغرب
           </p>
-        </div>
       </footer>
     </div>
   );
