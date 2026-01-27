@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+
+
+:root {
+  /* تعريف العائلات الخطية */
+  --font-primary: "Kufam", sans-serif;
+  --font-secondary: "El Messiri", sans-serif;
+}
+
+body {
+  margin: 0;
+  direction: rtl; /* تفعيل الاتجاه العربي */
+  font-family: var(--font-secondary); /* الخط الافتراضي للنصوص */
+  background-color: #f8fafc;
+  color: #1e293b;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* تخصيص العناوين بخط Kufam ليعطي طابع القوائم الفاخرة */
+h1, h2, h3, h4, .font-kufam {
+  font-family: var(--font-primary);
+  font-optical-sizing: auto;
+}
+
+/* تخصيص الأرقام والأسعار لتظهر بشكل هندسي واضح */
+.price-tag, .count-number {
+  font-family: var(--font-primary);
+  font-weight: 700;
+}
+
+/* تحسينات إضافية لجعل الخطوط تبدو أنعم */
+p {
+  line-height: 1.8;
+  letter-spacing: 0.01em;
+}
+
+/* كلاس مخصص إذا أردت استخدامه في أماكن محددة */
+.font-el-messiri {
+  font-family: var(--font-secondary);
+  font-optical-sizing: auto;
+}
+
+@layer base {
+  :root {
+    --color-primary: 255 107 53;
+    --color-secondary: 247 147 30;
+    --color-dark: 26 26 26;
+    --color-light: 245 245 245;
+  }
+}
+
+
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .bg-primary {
+    background-color: rgb(255 107 53);
+  }
+  
+  .bg-secondary {
+    background-color: rgb(247 147 30);
+  }
+  
+  .bg-dark {
+    background-color: rgb(26 26 26);
+  }
+  
+  .bg-light {
+    background-color: rgb(245 245 245);
+  }
+  
+  .text-primary {
+    color: rgb(255 107 53);
+  }
+  
+  .text-secondary {
+    color: rgb(247 147 30);
+  }
+  
+  .text-dark {
+    color: rgb(26 26 26);
+  }
+  
+  .text-light {
+    color: rgb(245 245 245);
+  }
+  
+  .border-primary {
+    border-color: rgb(255 107 53);
+  }
+  
+  .hover\:bg-primary\/90:hover {
+    background-color: rgba(255, 107, 53, 0.9);
+  }
+  
+  .bg-primary\/10 {
+    background-color: rgba(255, 107, 53, 0.1);
+  }
+  
+  .from-primary {
+    --tw-gradient-from: rgb(255 107 53);
+    --tw-gradient-to: rgb(255 107 53 / 0);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  }
+  
+  .to-secondary {
+    --tw-gradient-to: rgb(247 147 30);
+  }
+  
+  /* Toast Animation */
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -100%);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+  }
+  
+  .animate-slide-down {
+    animation: slideDown 0.3s ease-out;
+  }
+}
