@@ -1,88 +1,115 @@
+import React from 'react';
 
 const MenuCard = ({ item, onAddToCart, count }) => {
   return (
-    <div className="group relative bg-white rounded-[2rem] sm:rounded-[2.5rem] shadow-[0_8px_30px_-15px_rgba(0,0,0,0.1)] border border-gray-100/50 overflow-hidden hover:shadow-[0_20px_50px_-12px_rgba(234,88,12,0.15)] transition-all duration-700 flex flex-col h-full transform hover:-translate-y-2">
+    <div className="group relative w-full h-full">
       
-      {/* 1. قسم الصورة - نسبة عرض متغيرة للتوافق */}
-      <div className="relative w-full aspect-square overflow-hidden bg-gray-50">
-        <img 
-          src={item.image} 
-          alt={item.name} 
-          loading="lazy"
-          className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110"
-        />
+      {/* --- الخلفية الديكورية (تظهر عند التحويم أو النشاط) --- */}
+      <div className="absolute -inset-0.5 bg-gradient-to-b from-orange-400 to-orange-600 rounded-[2.5rem] opacity-0 group-hover:opacity-100 transition duration-500 blur-sm group-hover:blur opacity-20" />
+      
+      <div className="relative flex flex-col h-full bg-white rounded-[2.2rem] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(234,88,12,0.15)] transition-all duration-500 border border-gray-100">
 
-        {/* طبقة حماية للنصوص فوق الصورة */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 sm:opacity-0 group-hover:opacity-80 transition-opacity duration-500" />
-        
-        {/* شارة السعر: أصغر في الجوال لتوفير مساحة */}
-        <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
-          <div className="bg-white/95 backdrop-blur-md px-3 py-1 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl shadow-xl border border-white/20 flex flex-col items-center group-hover:bg-orange-600 group-hover:text-white transition-all duration-300">
-            <span className="text-lg sm:text-xl font-black leading-none">{item.price}</span>
-            <span className="text-[8px] sm:text-[10px] font-bold uppercase tracking-tighter">DH</span>
+        {/* 1. منطقة الصورة: منحنية وجذابة */}
+        <div className="relative h-48 sm:h-56 w-full overflow-hidden">
+          {/* الصورة مع تأثير زووم بطيء */}
+          <img 
+            src={item.image} 
+            alt={item.name} 
+            loading="lazy"
+            className="w-full h-full object-cover transform transition-transform duration-[1.5s] ease-in-out group-hover:scale-110"
+          />
+          
+          {/* طبقة تدرج لوني لضمان وضوح الأيقونات العلوية */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent opacity-60" />
+
+          {/* شارة السعر العائمة (تصميم زجاجي) */}
+          <div className="absolute top-4 left-4 z-10">
+            <div className="flex items-baseline gap-1 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-2xl shadow-lg border border-white/20">
+              <span className="text-lg font-black text-gray-900">{item.price}</span>
+              <span className="text-[10px] font-bold text-orange-600 uppercase">DH</span>
+            </div>
+          </div>
+
+          {/* أيقونة المفضلة / التميز */}
+          {item.popular && (
+            <div className="absolute top-4 right-4 z-10">
+              <div className="bg-orange-500 text-white p-1.5 rounded-full shadow-lg border-2 border-white/30 animate-pulse-slow">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </div>
+            </div>
+          )}
+          
+          {/* منحنى زخرفي في أسفل الصورة لفصلها عن النص (مهم جداً للمسة المغربية) */}
+          <div className="absolute -bottom-1 left-0 right-0">
+             <svg viewBox="0 0 1440 320" className="w-full h-12 text-white fill-current drop-shadow-sm transform scale-150">
+                <path d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,261.3C960,256,1056,224,1152,197.3C1248,171,1344,149,1392,138.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+             </svg>
           </div>
         </div>
 
-        {/* وسم التميز: يختفي النص في الهواتف الصغيرة جداً ويبقى الرمز */}
-        {item.popular && (
-          <div className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-orange-500 text-white px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-wider shadow-lg flex items-center gap-1 sm:gap-2 border border-orange-400/50">
-            <span className="animate-pulse text-xs">★</span>
-            <span className="hidden xs:inline">الأكثر تميزاً</span>
+        {/* 2. المحتوى والتفاصيل */}
+        <div className="flex flex-col flex-grow px-5 pb-5 pt-1 relative">
+          
+          {/* زخرفة خلفية خفيفة جداً (Pattern) */}
+          <div className="absolute top-10 right-0 w-24 h-24 bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')] opacity-[0.03] pointer-events-none" />
+
+          {/* التصنيف */}
+          <div className="flex items-center gap-2 mb-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">مذاق أصيل</span>
           </div>
-        )}
-      </div>
 
-      {/* 2. قسم المحتوى - مسافات مرنة (Responsive Padding) */}
-      <div className="p-4 sm:p-6 flex flex-col flex-grow bg-white z-20 -mt-5 sm:-mt-8 rounded-t-[1.5rem] sm:rounded-t-[2rem] relative shadow-[0_-15px_30px_-10px_rgba(0,0,0,0.05)]">
-        
-        <span className="text-orange-600 text-[8px] sm:text-[10px] font-black uppercase tracking-[0.15em] mb-1 sm:mb-2 block">
-           فاس الأصالة • Fes Tradition
-        </span>
+          {/* العنوان */}
+          <h3 className="text-xl font-black text-gray-900 leading-tight mb-2 group-hover:text-orange-600 transition-colors">
+            {item.name}
+          </h3>
 
-        <h3 className="text-base sm:text-xl font-black text-gray-900 mb-1.5 sm:mb-3 leading-tight tracking-tight group-hover:text-orange-600 transition-colors duration-300 line-clamp-1">
-          {item.name}
-        </h3>
-        
-        <p className="text-gray-500 text-[11px] sm:text-sm leading-relaxed mb-4 sm:mb-8 line-clamp-2 font-medium">
-          {item.description}
-        </p>
+          {/* الوصف */}
+          <p className="text-sm text-gray-500 font-medium leading-relaxed line-clamp-2 mb-6 pl-2 border-l-2 border-gray-100">
+            {item.description}
+          </p>
 
-        {/* 3. منطقة التحكم والطلب - أزرار سهلة اللمس (Touch Friendly) */}
-        <div className="mt-auto pt-3 border-t border-gray-50">
-          {count > 0 ? (
-            <div className="flex items-center justify-between bg-gray-50 rounded-[1.2rem] sm:rounded-[1.5rem] p-1 border border-gray-100 shadow-inner">
-              <button 
-                onClick={(e) => { e.stopPropagation(); onAddToCart(item, -1); }}
-                className="w-9 h-9 sm:w-12 sm:h-12 flex items-center justify-center bg-white text-gray-900 rounded-lg sm:rounded-xl shadow-sm font-black text-lg sm:text-xl hover:bg-red-50 hover:text-red-600 transition-all active:scale-90 border border-transparent hover:border-red-100"
-              >
-                −
-              </button>
-              
-              <div className="flex flex-col items-center">
-                <span className="font-black text-gray-900 text-base sm:text-xl leading-none">{count}</span>
-                <span className="text-[7px] sm:text-[8px] font-bold text-gray-400 uppercase mt-0.5">الكمية</span>
+          {/* 3. أزرار التحكم (Floating Action Bar style) */}
+          <div className="mt-auto">
+            {count > 0 ? (
+              <div className="flex items-center justify-between p-1.5 bg-gray-50 rounded-[1.2rem] border border-gray-200/60 shadow-inner transition-all duration-300">
+                <button 
+                  onClick={(e) => { e.stopPropagation(); onAddToCart(item, -1); }}
+                  className="w-11 h-11 flex items-center justify-center bg-white text-gray-900 rounded-2xl shadow-sm border border-gray-100 active:scale-90 transition-transform"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M20 12H4"/></svg>
+                </button>
+
+                <div className="flex flex-col items-center px-4 animate-in fade-in zoom-in duration-200">
+                  <span className="text-lg font-black text-gray-900 tabular-nums">{count}</span>
+                  <span className="text-[9px] font-bold text-gray-400">في الطلب</span>
+                </div>
+
+                <button 
+                  onClick={(e) => { e.stopPropagation(); onAddToCart(item, 1); }}
+                  className="w-11 h-11 flex items-center justify-center bg-orange-600 text-white rounded-2xl shadow-lg shadow-orange-200 active:scale-90 transition-transform"
+                >
+                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4"/></svg>
+                </button>
               </div>
-
-              <button 
-                onClick={(e) => { e.stopPropagation(); onAddToCart(item, 1); }}
-                className="w-9 h-9 sm:w-12 sm:h-12 flex items-center justify-center bg-orange-600 text-white rounded-lg sm:rounded-xl shadow-lg font-black text-lg sm:text-xl hover:bg-orange-700 transition-all active:scale-90"
+            ) : (
+              <button
+                onClick={() => onAddToCart(item, 1)}
+                className="group/btn relative w-full py-3.5 bg-gray-900 hover:bg-orange-600 text-white rounded-[1.2rem] transition-all duration-300 shadow-xl shadow-gray-200 hover:shadow-orange-200 hover:-translate-y-0.5 active:translate-y-0 overflow-hidden"
               >
-                +
+                <div className="flex items-center justify-center gap-3 relative z-10">
+                  <span className="text-sm font-bold">أضف إلى المائدة</span>
+                  <div className="bg-white/20 p-1 rounded-lg backdrop-blur-sm">
+                    <svg className="w-4 h-4 transition-transform group-hover/btn:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                  </div>
+                </div>
+                
+                {/* تأثير الحركة الخلفية */}
+                <div className="absolute inset-0 bg-white/10 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
               </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => onAddToCart(item, 1)}
-              className="group/btn relative overflow-hidden w-full bg-gray-900 text-white py-3 sm:py-4 rounded-[1.2rem] sm:rounded-[1.5rem] font-black text-[10px] sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 sm:gap-4 hover:bg-orange-600 active:scale-95 shadow-xl shadow-gray-200"
-            >
-              <span className="relative z-10">إضافة للطلب</span>
-              <div className="relative z-10 bg-white/10 p-1 rounded-md sm:rounded-lg">
-                <svg width="14" height="14" className="sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M16 10a4 4 0 0 1-8 0"/>
-                </svg>
-              </div>
-            </button>
-          )}
+            )}
+          </div>
+
         </div>
       </div>
     </div>

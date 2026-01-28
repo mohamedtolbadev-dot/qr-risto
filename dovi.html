@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --bg-light: #f8fafc;
+            --text-dark: #1e293b;
+            --accent: #e0f2fe;
+        }
+        body {
+            font-family: 'Cairo', sans-serif;
+            padding: 20px;
+            color: var(--text-dark);
+            line-height: 1.8;
+            background: #f1f5f9;
+        }
+        .container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            padding: 40px;
+            max-width: 850px;
+            margin: auto;
+            border-top: 8px solid var(--primary);
+        }
+        
+        /* تنسيق زر التحميل */
+        .no-print {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .btn-download {
+            background-color: var(--secondary);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn-download:hover {
+            background-color: var(--primary);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .header p {
+            color: var(--secondary);
+            font-weight: 600;
+            font-size: 18px;
+            margin-top: 5px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 35px;
+            padding: 20px;
+            border: 1px dashed #cbd5e1;
+            border-radius: 8px;
+        }
+        .info-item span {
+            font-weight: bold;
+            color: var(--primary);
+        }
+        h2 {
+            color: var(--primary);
+            font-size: 22px;
+            border-right: 4px solid var(--secondary);
+            padding-right: 12px;
+            margin-top: 30px;
+            background: linear-gradient(to left, #fff, var(--bg-light));
+        }
+        .section-content {
+            margin-right: 15px;
+            margin-bottom: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding-right: 10px;
+        }
+        ul li::before {
+            content: "•";
+            color: var(--secondary);
+            font-weight: bold;
+            display: inline-block; 
+            width: 1em;
+            margin-right: -1em;
+        }
+        .tech-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .tech-table td {
+            border: 1px solid #e2e8f0;
+            padding: 12px;
+        }
+        .tech-table tr td:first-child {
+            background-color: var(--bg-light);
+            font-weight: 700;
+            width: 30%;
+            color: var(--primary);
+        }
+        .summary-card {
+            background-color: var(--accent);
+            border: 1px solid var(--secondary);
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        .summary-card h2 {
+            background: transparent;
+            border: none;
+            margin-top: 0;
+            padding: 0;
+            color: var(--secondary);
+        }
+        .footer-note {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 40px;
+            padding: 20px;
+            background: #fffaf0;
+            border-right: 4px solid #f59e0b;
+            border-radius: 4px;
+        }
+        
+        /* إخفاء الزر عند الطباعة */
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; border: 1px solid #eee; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="no-print">
+    <button class="btn-download" onclick="generatePDF()">تحميل عرض السعر (PDF)</button>
+</div>
+
+<div class="container" id="invoice">
+    <div class="header">
+        <h1>عرض سعر | Devis</h1>
+        <p>مشروع تطوير منصة إدارة وتوزيع الطرود الرقمية</p>
+    </div>
+
+    <div class="info-grid">
+        <div class="info-item"><span>الزبون:</span> .................................</div>
+        <div class="info-item"><span>التاريخ:</span> .................................</div>
+        <div class="info-item"><span>اسم الوكالة:</span> .................................</div>
+        <div class="info-item"><span>رقم المرجع:</span> 2024/APP-001</div>
+    </div>
+
+    <h2>الوصف العام للمشروع</h2>
+    <p class="section-content">
+        تطوير تطبيق ويب (Web App) متكامل يهدف إلى أتمتة عمليات وكالة توزيع الطرود. يركز المشروع على رقمنة تدفق العمل من لحظة استلام الطرد إلى حين تسليمه للمستلم النهائي، مع توفير أدوات تحكم دقيقة للإدارة والموزعين.
+    </p>
+
+    <h2>1. لوحة الإدارة (Admin Control Panel)</h2>
+    <ul class="section-content">
+        <li>نظام إدارة الطرود (إدخال، تعديل، أرشفة).</li>
+        <li>توزيع المهام الذكي على الموزعين.</li>
+        <li>لوحة مراقبة حية لحالة الشحنات (Dashboard).</li>
+        <li>استخراج تقارير الأداء اليومية والشهرية.</li>
+    </ul>
+
+    <h2>2. واجهة الموزعين (Driver Interface)</h2>
+    <ul class="section-content">
+        <li>واجهة مستخدم متجاوبة (Mobile Friendly).</li>
+        <li>عرض قائمة الطرود اليومية لكل موزع على حدة.</li>
+        <li>تحديث سريع لحالة التوصيل (تم التسليم / فشل / تأجيل).</li>
+        <li>إمكانية إضافة ملاحظات ميدانية لكل عملية توصيل.</li>
+    </ul>
+
+    <h2>3. تتبع الشحنات (Public Tracking)</h2>
+    <ul class="section-content">
+        <li>صفحة تتبع خارجية لا تحتاج لتسجيل دخول.</li>
+        <li>البحث بواسطة رقم التتبع لمشرفة حالة الطرد.</li>
+    </ul>
+
+    <h2>4. المواصفات التقنية</h2>
+    <table class="tech-table">
+        <tr><td>بيئة العمل (Frontend)</td><td>React.js & Tailwind CSS</td></tr>
+        <tr><td>النظام الخلفي (Backend)</td><td>Node.js (Express)</td></tr>
+        <tr><td>قواعد البيانات</td><td>PostgreSQL / MySQL</td></tr>
+        <tr><td>الحماية</td><td>JWT Auth & Secure API Endpoints</td></tr>
+    </table>
+
+    <div class="summary-card">
+        <h2>5. الجدولة الزمنية والتكلفة</h2>
+        <p><strong>مدة الإنجاز:</strong> ما بين 20 إلى 30 يوم عمل.</p>
+        <p><strong>التكلفة الإجمالية:</strong> 6,000 - 7,500 درهم مغربي.</p>
+        <p><strong>نظام الدفع:</strong> 10% دفعة أولى لبدء العمل، والباقي عند التسليم.</p>
+    </div>
+
+    <div class="footer-note">
+        <strong>ملاحظات هامة:</strong><br>
+        • هذا التطبيق هو <strong>نسخة أولية (MVP)</strong> قابلة للتطوير المستقبلي.<br>
+        • أي إضافات مستقبلية ستكون موضوع <strong>عرض سعر منفصل</strong>.<br>
+        • العرض يتضمن فترة دعم فني لمدة 15 يوماً بعد التسليم.
+    </div>
+</div>
+
+<script>
+    function generatePDF() {
+        const element = document.getElementById('invoice');
+        const opt = {
+            margin:       0.5,
+            filename:     'عرض_سعر_مشروع.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+            jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
+
+        // تشغيل عملية التحويل
+        html2pdf().set(opt).from(element).save();
+    }
+</script>
+
+</body>
+</html>
