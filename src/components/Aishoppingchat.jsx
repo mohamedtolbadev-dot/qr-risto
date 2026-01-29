@@ -51,7 +51,7 @@ const PRODUCTS = [
   }
 ];
 
-const API_KEY = "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";
+const API_KEY = "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";
 
 export default function App() {
   const [messages, setMessages] = useState([
