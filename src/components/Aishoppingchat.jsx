@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Send, ShoppingBag, X, User, MapPin, Phone, 
   CheckCircle, Loader2, Package, Sparkles, 
-  ChevronLeft, Eye, Plus, Minus, CreditCard
+  ChevronLeft, Eye, Plus, Minus, CreditCard, Trash2,
+  Star, TrendingUp
 } from 'lucide-react';
 
 /**
@@ -15,7 +16,9 @@ const PRODUCTS = [
     price: 450,
     category: "إلكترونيات فاخرة",
     image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80",
-    description: "تحفة هندسية تجمع بين هيكل التيتانيوم الصلب وزجاج السافير المقاوم للخدش. مزودة بمستشعرات حيوية دقيقة مدعومة بالذكاء الاصطناعي لمراقبة صحتك على مدار الساعة."
+    description: "تحفة هندسية تجمع بين هيكل التيتانيوم الصلب وزجاج السافير المقاوم للخدش. مزودة بمستشعرات حيوية دقيقة مدعومة بالذكاء الاصطناعي لمراقبة صحتك على مدار الساعة.",
+    rating: 4.9,
+    reviews: 234
   },
   {
     id: 2,
@@ -23,7 +26,9 @@ const PRODUCTS = [
     price: 320,
     category: "صوتيات",
     image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80",
-    description: "انغمس في عالمك الخاص مع تقنية إلغاء الضوضاء النشطة التكيفية. وسائد أذن مريحة من الجلد الطبيعي توفر راحة فائقة لساعات طويلة من الاستماع."
+    description: "انغمس في عالمك الخاص مع تقنية إلغاء الضوضاء النشطة التكيفية. وسائد أذن مريحة من الجلد الطبيعي توفر راحة فائقة لساعات طويلة من الاستماع.",
+    rating: 4.8,
+    reviews: 189
   },
   {
     id: 3,
@@ -31,7 +36,9 @@ const PRODUCTS = [
     price: 180,
     category: "موضة",
     image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=600&q=80",
-    description: "رفيقك المثالي للسفر والعمل. مصنوعة يدوياً من الجلد الإيطالي الفاخر الذي يزداد جمالاً مع مرور الزمن. مساحات ذكية لتنظيم أجهزتك وأوراقك."
+    description: "رفيقك المثالي للسفر والعمل. مصنوعة يدوياً من الجلد الإيطالي الفاخر الذي يزداد جمالاً مع مرور الزمن. مساحات ذكية لتنظيم أجهزتك وأوراقك.",
+    rating: 4.7,
+    reviews: 156
   },
   {
     id: 4,
@@ -39,7 +46,9 @@ const PRODUCTS = [
     price: 120,
     category: "إكسسوارات",
     image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=600&q=80",
-    description: "تصميم خالد لا يبطل مع الزمن. عدسات مستقطبة توفر حماية 100% من الأشعة فوق البنفسجية مع إطار معدني خفيف الوزن ومتين."
+    description: "تصميم خالد لا يبطل مع الزمن. عدسات مستقطبة توفر حماية 100% من الأشعة فوق البنفسجية مع إطار معدني خفيف الوزن ومتين.",
+    rating: 4.6,
+    reviews: 98
   },
   {
     id: 5,
@@ -47,17 +56,19 @@ const PRODUCTS = [
     price: 250,
     category: "عطور نيش",
     image: "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=600&q=80",
-    description: "سيمفونية عطرية نادرة تجمع بين دهن العود الكمبودي المعتق وزعفران كشمير. عطر يترك انطباعاً لا ينسى وثبات يدوم لأكثر من 24 ساعة."
+    description: "سيمفونية عطرية نادرة تجمع بين دهن العود الكمبودي المعتق وزعفران كشمير. عطر يترك انطباعاً لا ينسى وثبات يدوم لأكثر من 24 ساعة.",
+    rating: 5.0,
+    reviews: 312
   }
 ];
 
-const API_KEY = "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";
+const API_KEY = "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";
 
 export default function App() {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: 'مرحباً بك في "المستقبل" - وجهتك للفخامة.\nأنا مستشارك الشخصي. كيف يمكنني مساعدتك في اختيار ما يليق بك اليوم؟',
+      content: 'مرحباً بك في "المستقبل" - وجهتك للفخامة 💎\nأنا مستشارك الشخصي. كيف يمكنني مساعدتك في اختيار ما يليق بك اليوم؟',
       type: 'text'
     }
   ]);
@@ -95,8 +106,14 @@ export default function App() {
       }
       return [...prev, { ...product, qty: 1 }];
     });
-    // Close modal if open
     setSelectedProduct(null);
+    
+    // Show success message
+    setMessages(prev => [...prev, { 
+      role: 'assistant', 
+      content: `تم إضافة "${product.name}" إلى سلتك بنجاح ✨`, 
+      type: 'text' 
+    }]);
   };
 
   const updateQty = (id, delta) => {
@@ -116,7 +133,7 @@ export default function App() {
     return cart.reduce((total, item) => total + (item.price * item.qty), 0);
   };
 
-  // --- Logic: AI Communication ---
+  // --- Logic: AI Communication (FIXED) ---
   const sendMessage = async (overrideInput = null) => {
     const userText = overrideInput || input;
     if (!userText.trim()) return;
@@ -130,59 +147,71 @@ export default function App() {
 
     try {
       const systemPrompt = `
-        أنت مساعد مبيعات ذكي ومحترف لمتجر "المستقبل" الفاخر.
-        شخصيتك: لبق، ذكي، تستخدم لغة عربية فصحى عصرية، ولا تكثر من الكلام دون فائدة.
-        
-        قائمة المنتجات:
-        ${JSON.stringify(PRODUCTS)}
+أنت مساعد مبيعات ذكي ومحترف لمتجر "المستقبل" الفاخر.
+شخصيتك: لبق، ذكي، تستخدم لغة عربية فصحى عصرية، ودود وداعم.
 
-        حالة السلة الحالية للعميل:
-        ${JSON.stringify(cart)}
+قائمة المنتجات المتوفرة:
+${JSON.stringify(PRODUCTS, null, 2)}
 
-        السيناريوهات المطلوبة (Output Formats):
+حالة السلة الحالية للعميل:
+${cart.length > 0 ? JSON.stringify(cart, null, 2) : 'السلة فارغة'}
 
-        1. **عندما يطلب العميل رؤية منتجات**:
-           لا تصف المنتجات نصياً. فقط أرسل JSON:
-           <<<JSON
-           { "action": "show_products", "productIds": [1, 2] }
-           JSON>>>
+بيانات العميل الحالية:
+${JSON.stringify(customerData, null, 2)}
 
-        2. **عندما يقرر العميل الشراء (Checkout/الدفع/إتمام الطلب)**:
-           لا تسرد المنتجات نصياً أبداً. بدلاً من ذلك، اعرض بطاقة مراجعة السلة باستخدام JSON:
-           <<<JSON
-           { "action": "review_cart" }
-           JSON>>>
-           *ملاحظة: بعد عرض السلة، اطلب الاسم الكريم بلطف للبدء في إجراءات الشحن.*
+⚠️ قواعد مهمة جداً:
+1. **لا تعرض أبداً كود JSON للمستخدم** - استخدمه فقط للتحكم في الواجهة
+2. اجعل ردودك طبيعية ومحادثاتية وودودة
+3. عند طلب عرض منتجات، أرسل JSON ثم أضف تعليق قصير ودود
 
-        3. **جمع البيانات (الاسم، الهاتف، العنوان)**:
-           اطلب البيانات الناقصة واحدة تلو الأخرى.
+السيناريوهات:
 
-        4. **التأكيد النهائي**:
-           عند اكتمال البيانات، اعرض ملخص الطلب النهائي:
-           <<<JSON
-           { 
-             "action": "show_final_summary", 
-             "customer": { "name": "...", "phone": "...", "address": "..." } 
-           }
-           JSON>>>
-        
-        اجعل ردك النصي قصيراً ومشجعاً دائماً.
-      `;
+**1. عرض المنتجات:**
+عندما يطلب العميل رؤية منتجات، استخدم هذا التنسيق بالضبط:
+<<<JSON
+{"action": "show_products", "productIds": [1, 2, 3]}
+JSON>>>
+
+ثم أضف تعليق قصير مثل: "اخترت لك مجموعة رائعة من أفضل منتجاتنا، تفضل بالاطلاع عليها! 😊"
+
+**2. مراجعة السلة:**
+عندما يريد إتمام الطلب:
+<<<JSON
+{"action": "review_cart"}
+JSON>>>
+
+ثم قل شيئاً مثل: "ممتاز! هذا ما اخترته. هل يمكنني الحصول على اسمك الكريم لإتمام الطلب؟"
+
+**3. جمع البيانات:**
+اطلب البيانات واحدة تلو الأخرى بشكل طبيعي ومهذب.
+
+**4. الملخص النهائي:**
+<<<JSON
+{"action": "show_final_summary", "customer": {"name": "...", "phone": "...", "address": "..."}}
+JSON>>>
+
+ثم قل: "رائع! تحقق من تفاصيل طلبك أعلاه وأكد عندما تكون جاهزاً 🎉"
+
+تذكر: JSON للتحكم فقط، النص للعميل يجب أن يكون طبيعياً تماماً.
+`;
 
       const apiMessages = [
-        { role: "system", content: systemPrompt },
-        ...messages.map(m => ({ role: m.role, content: m.content || "" })).slice(-10) // Keep context limited to last 10
+        { role: "user", content: systemPrompt }
       ];
 
-      // Add the user's latest message if it wasn't added by state update yet (in case of override)
-      if (overrideInput) {
-         apiMessages.push({ role: "user", content: overrideInput });
-      } else {
-         const lastMsg = apiMessages[apiMessages.length - 1];
-         if (lastMsg.role !== 'user' || lastMsg.content !== userText) {
-             apiMessages.push({ role: "user", content: userText });
-         }
-      }
+      // Add conversation history (last 10 messages)
+      const recentMessages = messages.slice(-10);
+      recentMessages.forEach(msg => {
+        if (msg.type === 'text' && msg.content) {
+          apiMessages.push({ 
+            role: msg.role === 'user' ? 'user' : 'assistant', 
+            content: msg.content 
+          });
+        }
+      });
+
+      // Add current user message
+      apiMessages.push({ role: "user", content: userText });
 
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
@@ -192,9 +221,10 @@ export default function App() {
           "HTTP-Referer": "https://luxury-store.local", 
         },
         body: JSON.stringify({
-          model: "openai/gpt-3.5-turbo",
+          model: "openai/gpt-4o-mini",
           messages: apiMessages,
-          temperature: 0.7,
+          temperature: 0.8,
+          max_tokens: 500
         })
       });
 
@@ -204,21 +234,22 @@ export default function App() {
       let type = 'text';
       let extraData = null;
 
-      // Parse Custom JSON Commands
-      const jsonMatch = aiContent.match(/<<<JSON([\s\S]*?)JSON>>>/);
+      // Parse Custom JSON Commands (FIXED)
+      const jsonMatch = aiContent.match(/<<<JSON\s*([\s\S]*?)\s*JSON>>>/);
 
       if (jsonMatch) {
         try {
-          const jsonStr = jsonMatch[1];
+          const jsonStr = jsonMatch[1].trim();
           const parsedData = JSON.parse(jsonStr);
-          // Remove the JSON block from text shown to user
-          aiContent = aiContent.replace(jsonMatch[0], '').trim();
+          
+          // **CRITICAL FIX**: Remove JSON block completely from user-facing text
+          aiContent = aiContent.replace(/<<<JSON\s*[\s\S]*?\s*JSON>>>/g, '').trim();
 
           if (parsedData.action === 'show_products') {
             type = 'product-grid';
             extraData = PRODUCTS.filter(p => parsedData.productIds.includes(p.id));
           } else if (parsedData.action === 'review_cart') {
-            type = 'cart-review'; // New Type for Visual Cart in Chat
+            type = 'cart-review';
             extraData = cart; 
           } else if (parsedData.action === 'show_final_summary') {
             type = 'order-summary';
@@ -239,7 +270,11 @@ export default function App() {
 
     } catch (error) {
       console.error(error);
-      setMessages(prev => [...prev, { role: 'assistant', content: 'نعتذر، واجهنا انقطاعاً بسيطاً. هل يمكنك إعادة المحاولة؟', type: 'text' }]);
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: 'نعتذر، واجهنا انقطاعاً بسيطاً. هل يمكنك إعادة المحاولة؟ 🙏', 
+        type: 'text' 
+      }]);
     } finally {
       setIsLoading(false);
     }
@@ -248,7 +283,7 @@ export default function App() {
   const confirmOrder = () => {
     setMessages(prev => [...prev, { 
       role: 'assistant', 
-      content: `تهانينا ${customerData.name}! 🎉\nتم تأكيد طلبك بنجاح. سنقوم بتجهيزه بعناية وإرساله إلى ${customerData.address}.`, 
+      content: `🎊 تهانينا ${customerData.name}!\n\nتم تأكيد طلبك بنجاح بقيمة ${calculateTotal()} ريال سعودي.\nسنقوم بتجهيزه بعناية فائقة وإرساله إلى:\n📍 ${customerData.address}\n\nشكراً لثقتك في "المستقبل" 💎`, 
       type: 'text' 
     }]);
     setCart([]);
@@ -257,7 +292,7 @@ export default function App() {
 
   // --- Components ---
 
-  // 1. Product Modal
+  // 1. Product Modal (Enhanced)
   const ProductModal = () => {
     if (!selectedProduct) return null;
 
@@ -267,44 +302,47 @@ export default function App() {
           className="absolute inset-0 bg-black/60 backdrop-blur-sm"
           onClick={() => setSelectedProduct(null)}
         />
-        <div className="bg-white rounded-[2rem] overflow-hidden shadow-2xl w-full max-w-lg relative z-10 flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-300">
+        <div className="bg-white rounded-3xl overflow-hidden shadow-2xl w-full max-w-lg relative z-10 flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-300">
           
-          {/* Close Button */}
           <button 
             onClick={() => setSelectedProduct(null)}
-            className="absolute top-4 right-4 bg-white/50 backdrop-blur-md p-2 rounded-full hover:bg-white transition-colors z-20"
+            className="absolute top-4 right-4 bg-white/80 backdrop-blur-md p-2.5 rounded-full hover:bg-white transition-all z-20 shadow-lg"
           >
             <X size={20} />
           </button>
 
-          {/* Image */}
-          <div className="h-64 sm:h-80 bg-gray-100 relative">
+          <div className="h-72 bg-gray-100 relative">
              <img 
                src={selectedProduct.image} 
                alt={selectedProduct.name} 
                className="w-full h-full object-cover"
              />
-             <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold shadow-sm">
+             <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold shadow-md flex items-center gap-1">
+                <Sparkles size={12} className="text-amber-500" />
                 {selectedProduct.category}
+             </div>
+             
+             <div className="absolute top-4 left-4 bg-white/95 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold shadow-md flex items-center gap-1">
+                <Star size={12} className="text-yellow-500 fill-yellow-500" />
+                {selectedProduct.rating} ({selectedProduct.reviews})
              </div>
           </div>
 
-          {/* Details */}
           <div className="p-6 sm:p-8 flex flex-col flex-1 overflow-y-auto">
-             <div className="flex justify-between items-start mb-4">
+             <div className="flex justify-between items-start mb-3">
                 <h2 className="text-2xl font-black text-gray-900">{selectedProduct.name}</h2>
-                <span className="text-xl font-serif font-bold text-emerald-700 whitespace-nowrap">
+                <span className="text-2xl font-serif font-bold text-emerald-700 whitespace-nowrap">
                    {selectedProduct.price} ر.س
                 </span>
              </div>
              
-             <p className="text-gray-600 leading-relaxed mb-8 text-sm sm:text-base">
+             <p className="text-gray-600 leading-relaxed mb-6 text-sm sm:text-base">
                 {selectedProduct.description}
              </p>
 
              <button 
                onClick={() => addToCart(selectedProduct)}
-               className="mt-auto w-full bg-black text-white py-4 rounded-xl font-bold text-lg hover:bg-gray-800 transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
+               className="mt-auto w-full bg-gradient-to-r from-black to-gray-800 text-white py-4 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all active:scale-95 flex items-center justify-center gap-2"
              >
                <ShoppingBag size={20} />
                إضافة إلى السلة
@@ -315,9 +353,9 @@ export default function App() {
     );
   };
 
-  // 2. Chat Bubble Components
+  // 2. Chat Bubble Components (Enhanced)
   const ProductCard = ({ product }) => (
-    <div className="group bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden w-64 flex-shrink-0 snap-center transform transition-all duration-300 hover:-translate-y-1 relative">
+    <div className="group bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden w-64 flex-shrink-0 snap-center transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl relative">
       <div 
         className="relative h-48 bg-gray-50 overflow-hidden cursor-pointer"
         onClick={() => setSelectedProduct(product)}
@@ -327,21 +365,32 @@ export default function App() {
           alt={product.name} 
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
         />
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-        <div className="absolute top-3 right-3 bg-white/90 p-1.5 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity">
-           <Eye size={16} className="text-gray-700" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        
+        <div className="absolute top-3 right-3 bg-white/95 backdrop-blur p-1.5 rounded-full shadow-md">
+          <Star size={12} className="text-yellow-500 fill-yellow-500" />
+        </div>
+        
+        <div className="absolute top-3 left-3 bg-white/95 backdrop-blur px-2 py-1 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity">
+           <Eye size={14} className="text-gray-700" />
+        </div>
+        
+        <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="bg-white/95 backdrop-blur px-2 py-1 rounded-full text-xs font-bold text-center">
+            {product.rating} ★ ({product.reviews} تقييم)
+          </div>
         </div>
       </div>
       
       <div className="p-4">
-        <h3 className="font-bold text-gray-900 text-sm truncate mb-1">{product.name}</h3>
-        <p className="text-xs text-gray-500 line-clamp-2 mb-3 h-8">{product.description}</p>
+        <h3 className="font-bold text-gray-900 text-sm mb-1">{product.name}</h3>
+        <p className="text-xs text-gray-500 mb-1">{product.category}</p>
         
-        <div className="flex items-center justify-between mt-2">
-          <span className="font-bold text-gray-900">{product.price} ر.س</span>
+        <div className="flex items-center justify-between mt-3">
+          <span className="font-black text-lg text-gray-900">{product.price} <span className="text-xs text-gray-500 font-normal">ر.س</span></span>
           <button 
             onClick={(e) => { e.stopPropagation(); addToCart(product); }}
-            className="bg-black text-white p-2 rounded-lg hover:bg-emerald-600 transition-colors shadow-md"
+            className="bg-gradient-to-r from-black to-gray-800 text-white p-2.5 rounded-xl hover:shadow-lg transition-all active:scale-95"
           >
             <Plus size={16} />
           </button>
@@ -351,292 +400,307 @@ export default function App() {
   );
 
   const CartReviewBubble = () => (
-    <div className="bg-white p-5 rounded-3xl shadow-lg border border-gray-100 w-full max-w-sm mt-2">
-       <div className="flex items-center gap-2 mb-4 border-b border-gray-100 pb-2">
+    <div className="bg-gradient-to-br from-white to-gray-50 p-5 rounded-3xl shadow-xl border border-gray-200 w-full max-w-sm mt-2">
+       <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-200">
          <ShoppingBag size={20} className="text-emerald-600" />
          <h3 className="font-bold text-gray-800">مراجعة السلة</h3>
+         <span className="mr-auto bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full text-xs font-bold">
+           {cart.length} منتجات
+         </span>
        </div>
        
        {cart.length === 0 ? (
-         <p className="text-gray-400 text-sm text-center py-4">السلة فارغة</p>
+         <p className="text-gray-400 text-sm text-center py-6">السلة فارغة</p>
        ) : (
-         <div className="space-y-3">
+         <div className="space-y-3 max-h-64 overflow-y-auto">
            {cart.map((item, idx) => (
-             <div key={idx} className="flex items-center gap-3 bg-gray-50 p-2 rounded-xl">
-               <img src={item.image} className="w-12 h-12 rounded-lg object-cover" alt="" />
+             <div key={idx} className="flex items-center gap-3 bg-white p-3 rounded-2xl shadow-sm border border-gray-100">
+               <img src={item.image} className="w-14 h-14 rounded-xl object-cover" alt="" />
                <div className="flex-1 min-w-0">
                  <p className="font-bold text-xs text-gray-800 truncate">{item.name}</p>
-                 <p className="text-xs text-gray-500">{item.price} ر.س</p>
+                 <p className="text-xs text-gray-500">{item.price} ر.س × {item.qty}</p>
                </div>
-               <div className="flex items-center gap-2 bg-white rounded-lg px-2 py-1 shadow-sm">
-                  <span className="text-xs font-bold">{item.qty}</span>
+               <div className="text-left">
+                 <p className="text-sm font-black text-gray-900">{item.price * item.qty} ر.س</p>
                </div>
              </div>
            ))}
          </div>
        )}
 
-       <div className="mt-4 pt-3 border-t border-dashed border-gray-200 flex justify-between items-center">
-         <span className="text-sm text-gray-500">الإجمالي</span>
-         <span className="font-black text-lg text-gray-900">{calculateTotal()} ر.س</span>
+       <div className="mt-4 pt-4 border-t border-dashed border-gray-300 flex justify-between items-center">
+         <span className="text-sm text-gray-600 font-medium">الإجمالي الكلي</span>
+         <span className="font-black text-2xl text-gray-900">{calculateTotal()} <span className="text-sm text-gray-500 font-normal">ر.س</span></span>
        </div>
     </div>
   );
 
   const FinalOrderSummary = ({ customer }) => (
-    <div className="bg-gradient-to-br from-emerald-50 to-white p-6 rounded-3xl shadow-lg border border-emerald-100 w-full max-w-sm mt-4 relative overflow-hidden">
+    <div className="bg-gradient-to-br from-emerald-50 via-white to-emerald-50/30 p-6 rounded-3xl shadow-xl border-2 border-emerald-200 w-full max-w-sm mt-4 relative overflow-hidden">
+      
+      {/* Decorative Elements */}
+      <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-200/30 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 left-0 w-24 h-24 bg-yellow-200/30 rounded-full blur-2xl"></div>
+      
       <div className="flex items-center gap-3 mb-6 relative z-10">
-        <div className="bg-white p-2.5 rounded-xl text-emerald-600 shadow-sm">
+        <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 p-3 rounded-2xl text-white shadow-lg">
           <CheckCircle className="w-6 h-6" />
         </div>
         <div>
-          <h3 className="font-bold text-gray-900">ملخص نهائي</h3>
-          <p className="text-xs text-gray-500">جاهز للتأكيد</p>
+          <h3 className="font-black text-gray-900 text-lg">جاهز للتأكيد</h3>
+          <p className="text-xs text-gray-500">تحقق من البيانات</p>
         </div>
       </div>
       
       <div className="space-y-4 mb-6 relative z-10">
-        <div className="bg-white/60 p-4 rounded-2xl space-y-2 text-sm border border-emerald-50/50">
-           <div className="flex justify-between">
-             <span className="text-gray-500">الاسم:</span>
-             <span className="font-bold text-gray-800">{customer.name}</span>
+        <div className="bg-white/80 backdrop-blur p-5 rounded-2xl space-y-3 text-sm border border-emerald-100 shadow-sm">
+           <div className="flex justify-between items-center">
+             <span className="text-gray-500 flex items-center gap-2">
+               <User size={14} />
+               الاسم:
+             </span>
+             <span className="font-bold text-gray-900">{customer.name}</span>
            </div>
-           <div className="flex justify-between">
-             <span className="text-gray-500">الهاتف:</span>
-             <span className="font-bold text-gray-800">{customer.phone}</span>
+           <div className="flex justify-between items-center">
+             <span className="text-gray-500 flex items-center gap-2">
+               <Phone size={14} />
+               الهاتف:
+             </span>
+             <span className="font-bold text-gray-900" dir="ltr">{customer.phone}</span>
            </div>
-           <div className="block pt-1">
-             <span className="text-gray-500 block text-xs mb-1">العنوان:</span>
-             <span className="font-bold text-gray-800 block leading-tight">{customer.address}</span>
+           <div className="pt-2 border-t border-gray-100">
+             <span className="text-gray-500 block text-xs mb-2 flex items-center gap-2">
+               <MapPin size={14} />
+               العنوان:
+             </span>
+             <span className="font-bold text-gray-900 block leading-relaxed">{customer.address}</span>
            </div>
         </div>
 
-        <div className="flex justify-between items-center bg-emerald-600 text-white p-3 rounded-xl shadow-md">
-          <span className="font-medium text-sm">المبلغ المستحق</span>
-          <span className="font-bold text-lg">{calculateTotal()} ر.س</span>
+        <div className="flex justify-between items-center bg-gradient-to-r from-emerald-600 to-emerald-700 text-white p-4 rounded-2xl shadow-lg">
+          <span className="font-medium">المبلغ المستحق</span>
+          <span className="font-black text-2xl">{calculateTotal()} ر.س</span>
         </div>
       </div>
 
       <button 
         onClick={confirmOrder}
-        className="w-full bg-gray-900 text-white py-3.5 rounded-xl font-bold hover:bg-black transition-all shadow-lg flex items-center justify-center gap-2 relative z-10 active:scale-95"
+        className="w-full bg-gradient-to-r from-gray-900 to-black text-white py-4 rounded-2xl font-bold hover:shadow-2xl transition-all active:scale-95 relative z-10 flex items-center justify-center gap-2 text-lg"
       >
         <span>تأكيد الطلب</span>
-        <ArrowRightIcon />
+        <Package size={20} />
       </button>
     </div>
   );
 
-  // Helper Icon
-  const ArrowRightIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-  );
-
   // Main UI Render
   return (
-    <div className="flex flex-col h-screen font-sans text-right text-gray-900 relative" dir="rtl">
-      
-      {/* Background Image Layer */}
-      <div 
-        className="absolute inset-0 z-0"
-        style={{ 
-          backgroundImage: "url('https://www.retis.be/wp-content/uploads/2022/09/ecommerce-definition.png')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        }}
-      />
-      {/* Overlay to ensure readability */}
-      <div className="absolute inset-0 z-0 bg-white/90 backdrop-blur-[2px]" />
+    <div className="flex flex-col h-screen bg-gradient-to-b from-gray-50 to-white font-sans text-right text-gray-900" dir="rtl">
+      <ProductModal />
 
-      {/* Content Wrapper */}
-      <div className="relative z-10 flex flex-col h-full">
-        <ProductModal />
-
-        {/* Header */}
-        <header className="absolute top-0 w-full bg-white/60 backdrop-blur-md border-b border-white/50 px-6 py-4 z-40 flex justify-between items-center transition-all">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-black text-white rounded-xl flex items-center justify-center shadow-lg transform rotate-3 hover:rotate-0 transition-transform">
-              <Sparkles size={18} className="text-yellow-400" fill="currentColor" />
-            </div>
-            <div>
-              <h1 className="text-lg font-black tracking-tight text-gray-900">المستقبل</h1>
-              <p className="text-[10px] text-gray-500 font-bold tracking-widest uppercase">Luxury Edition</p>
-            </div>
+      {/* Header (Enhanced) */}
+      <header className="absolute top-0 w-full bg-white/90 backdrop-blur-xl border-b border-gray-100 px-6 py-4 z-40 flex justify-between items-center shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="w-11 h-11 bg-gradient-to-br from-black to-gray-700 text-white rounded-2xl flex items-center justify-center shadow-xl transform hover:rotate-6 transition-transform">
+            <Sparkles size={20} className="text-yellow-400" fill="currentColor" />
           </div>
-          
-          <button 
-            onClick={() => setIsCartOpen(!isCartOpen)}
-            className="relative group p-3 rounded-2xl hover:bg-white/50 transition-all duration-300"
-          >
-            <ShoppingBag className="text-gray-800 w-6 h-6" strokeWidth={1.5} />
-            {cart.length > 0 && (
-              <span className="absolute top-2 right-2 bg-emerald-500 text-white text-[10px] min-w-[18px] h-[18px] flex items-center justify-center rounded-full font-bold shadow ring-2 ring-white animate-in zoom-in">
-                {cart.reduce((a, b) => a + b.qty, 0)}
-              </span>
-            )}
-          </button>
-        </header>
-
-        {/* Main Chat Area */}
-        <main className="flex-1 overflow-y-auto pt-24 pb-4 px-4 md:px-6 space-y-6 scroll-smooth">
-          {messages.map((msg, index) => (
-            <div key={index} className={`flex ${msg.role === 'user' ? 'justify-start' : 'justify-end'} group animate-in slide-in-from-bottom-2 duration-500`}>
-              
-              {/* User Message */}
-              {msg.role === 'user' && (
-                <div className="bg-black text-white px-6 py-3.5 rounded-[2rem] rounded-tr-none shadow-xl shadow-gray-200/50 max-w-[85%] md:max-w-[70%] text-sm md:text-base leading-relaxed">
-                  {msg.content}
-                </div>
-              )}
-
-              {/* Assistant Message */}
-              {msg.role === 'assistant' && (
-                <div className="flex flex-col items-end w-full">
-                  <div className="flex items-start gap-3 max-w-full flex-row-reverse">
-                    <div className="w-9 h-9 rounded-full bg-white/80 border border-white shadow-sm flex-shrink-0 flex items-center justify-center mt-1 backdrop-blur-sm">
-                      <Sparkles size={14} className="text-emerald-600" />
-                    </div>
-                    
-                    <div className="space-y-4 flex flex-col items-end w-full max-w-[95%] md:max-w-[85%]">
-                      
-                      {/* Text Bubble */}
-                      {msg.content && (
-                        <div className="bg-white/80 border border-white/50 text-gray-700 px-6 py-4 rounded-[2rem] rounded-tl-none shadow-sm text-sm md:text-base leading-relaxed whitespace-pre-line backdrop-blur-sm">
-                          {msg.content}
-                        </div>
-                      )}
-                      
-                      {/* Visual Components based on AI Action */}
-                      {msg.type === 'product-grid' && msg.data && (
-                        <div className="w-full overflow-x-auto pb-4 pt-2 px-1 scrollbar-hide">
-                          <div className="flex gap-4 w-max">
-                              {msg.data.map(product => (
-                                <ProductCard key={product.id} product={product} />
-                              ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {msg.type === 'cart-review' && (
-                        <CartReviewBubble />
-                      )}
-
-                      {msg.type === 'order-summary' && msg.data && (
-                        <FinalOrderSummary customer={msg.data} />
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-          
-          {isLoading && (
-            <div className="flex justify-end w-full px-14">
-              <div className="flex gap-1 bg-white/80 px-4 py-3 rounded-2xl shadow-sm border border-white/50 backdrop-blur-sm">
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-0"></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-100"></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-200"></div>
-              </div>
-            </div>
+          <div>
+            <h1 className="text-xl font-black tracking-tight text-gray-900">المستقبل</h1>
+            <p className="text-[10px] text-gray-400 font-bold tracking-widest uppercase">Luxury Edition</p>
+          </div>
+        </div>
+        
+        <button 
+          onClick={() => setIsCartOpen(!isCartOpen)}
+          className="relative group p-3 rounded-2xl hover:bg-gray-100 transition-all duration-300"
+        >
+          <ShoppingBag className="text-gray-800 w-6 h-6" strokeWidth={1.5} />
+          {cart.length > 0 && (
+            <span className="absolute top-1 right-1 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white text-[10px] min-w-[20px] h-[20px] flex items-center justify-center rounded-full font-bold shadow-lg ring-2 ring-white animate-in zoom-in">
+              {cart.reduce((a, b) => a + b.qty, 0)}
+            </span>
           )}
-          <div ref={messagesEndRef} />
-        </main>
+        </button>
+      </header>
 
-        {/* Input Area */}
-        <footer className="fixed bottom-0 left-0 right-0 p-4 z-40 bg-gradient-to-t from-white/90 via-white/50 to-transparent pb-6 pt-10">
-          <div className="max-w-3xl mx-auto relative flex items-center gap-3 bg-white/90 backdrop-blur-md p-2 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white ring-1 ring-white/50">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-              placeholder="اكتب هنا.. (مثال: أرني الساعات الفاخرة)"
-              className="flex-1 bg-transparent text-gray-900 placeholder-gray-500 px-4 py-2 focus:outline-none text-base"
-              disabled={isLoading}
-            />
-            <button 
-              onClick={() => sendMessage()} 
-              disabled={!input.trim() || isLoading}
-              className="bg-black text-white w-10 h-10 flex items-center justify-center rounded-full hover:scale-105 disabled:opacity-50 transition-all"
-            >
-              {isLoading ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} className="ml-0.5" />}
-            </button>
-          </div>
-        </footer>
-
-        {/* Cart Drawer (Side Panel) */}
-        {isCartOpen && (
-          <div className="fixed inset-0 z-50 flex justify-end">
-            <div 
-              className="absolute inset-0 bg-black/20 backdrop-blur-[2px] transition-opacity" 
-              onClick={() => setIsCartOpen(false)}
-            />
-            <div className="relative w-full max-w-sm bg-white/95 backdrop-blur-xl h-full shadow-2xl flex flex-col animate-in slide-in-from-left duration-300 border-r border-white/20">
-              <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-white/50">
-                <div>
-                  <h2 className="font-bold text-xl text-gray-900">سلتك</h2>
-                  <p className="text-xs text-gray-500 mt-1">{cart.length} منتجات مختارة</p>
-                </div>
-                <button onClick={() => setIsCartOpen(false)} className="p-2 hover:bg-white rounded-full transition-colors">
-                  <X className="text-gray-400" />
-                </button>
+      {/* Main Chat Area */}
+      <main className="flex-1 overflow-y-auto pt-24 pb-4 px-4 md:px-6 space-y-6 scroll-smooth">
+        {messages.map((msg, index) => (
+          <div key={index} className={`flex ${msg.role === 'user' ? 'justify-start' : 'justify-end'} group animate-in slide-in-from-bottom-2 duration-500`}>
+            
+            {/* User Message */}
+            {msg.role === 'user' && (
+              <div className="bg-gradient-to-r from-black to-gray-800 text-white px-6 py-4 rounded-[2rem] rounded-tr-none shadow-xl max-w-[85%] md:max-w-[70%] text-sm md:text-base leading-relaxed">
+                {msg.content}
               </div>
-              
-              <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                {cart.length === 0 ? (
-                  <div className="h-full flex flex-col items-center justify-center text-center text-gray-400">
-                    <ShoppingBag className="w-12 h-12 opacity-20 mb-4" />
-                    <p>السلة فارغة</p>
+            )}
+
+            {/* Assistant Message */}
+            {msg.role === 'assistant' && (
+              <div className="flex flex-col items-end w-full">
+                <div className="flex items-start gap-3 max-w-full flex-row-reverse">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-100 to-white border-2 border-emerald-200 shadow-md flex-shrink-0 flex items-center justify-center mt-1">
+                    <Sparkles size={16} className="text-emerald-600" />
                   </div>
-                ) : (
-                  cart.map(item => (
-                    <div key={item.id} className="flex gap-3 bg-white/80 p-3 rounded-2xl border border-gray-100 shadow-sm backdrop-blur-sm">
-                      <div className="w-20 h-20 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0">
-                        <img src={item.image} alt="" className="w-full h-full object-cover" />
+                  
+                  <div className="space-y-4 flex flex-col items-end w-full max-w-[95%] md:max-w-[85%]">
+                    
+                    {/* Text Bubble */}
+                    {msg.content && (
+                      <div className="bg-white border border-gray-200 text-gray-800 px-6 py-4 rounded-[2rem] rounded-tl-none shadow-md text-sm md:text-base leading-relaxed whitespace-pre-line">
+                        {msg.content}
                       </div>
-                      <div className="flex-1 flex flex-col justify-between">
-                        <div>
-                          <p className="text-sm font-bold text-gray-900 line-clamp-1">{item.name}</p>
-                          <p className="text-xs text-gray-500">{item.category}</p>
-                        </div>
-                        <div className="flex justify-between items-end mt-2">
-                          <span className="text-sm font-bold">{item.price} ر.س</span>
-                          <div className="flex items-center gap-3 bg-gray-50 rounded-lg px-2 py-1">
-                            <button onClick={() => updateQty(item.id, -1)} className="text-gray-400 hover:text-black"><Minus size={14}/></button>
-                            <span className="text-xs font-bold w-4 text-center">{item.qty}</span>
-                            <button onClick={() => updateQty(item.id, 1)} className="text-gray-400 hover:text-black"><Plus size={14}/></button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
+                    )}
+                    
+                    {/* Visual Components */}
 
-              <div className="p-6 bg-white/50 border-t border-gray-100">
-                <div className="flex justify-between items-end mb-4">
-                  <span className="text-gray-500 text-sm">الإجمالي</span>
-                  <span className="font-black text-2xl text-gray-900">{calculateTotal()} <span className="text-sm font-normal text-gray-400">ر.س</span></span>
+                    {/* 1. Product Carousel */}
+                    {msg.type === 'product-grid' && msg.data && (
+                      <div className="w-full overflow-x-auto pb-4 pt-2 px-1 scrollbar-hide">
+                         <div className="flex gap-4 w-max">
+                            {msg.data.map(product => (
+                              <ProductCard key={product.id} product={product} />
+                            ))}
+                         </div>
+                      </div>
+                    )}
+
+                    {/* 2. Visual Cart Review */}
+                    {msg.type === 'cart-review' && (
+                      <CartReviewBubble />
+                    )}
+
+                    {/* 3. Final Summary */}
+                    {msg.type === 'order-summary' && msg.data && (
+                      <FinalOrderSummary customer={msg.data} />
+                    )}
+                  </div>
                 </div>
-                <button 
-                  onClick={() => {
-                    setIsCartOpen(false);
-                    sendMessage("أريد إتمام الطلب");
-                  }}
-                  disabled={cart.length === 0}
-                  className="w-full bg-black text-white py-4 rounded-xl font-bold disabled:opacity-50 hover:bg-gray-800 transition-all flex justify-between px-6 items-center shadow-lg"
-                >
-                  <span>إتمام الشراء</span>
-                  <CreditCard size={20} />
-                </button>
               </div>
-            </div>
+            )}
+          </div>
+        ))}
+        
+        {isLoading && (
+          <div className="flex justify-end w-full px-14">
+             <div className="flex gap-1.5 bg-white px-5 py-3 rounded-2xl shadow-md border border-gray-100">
+               <div className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{animationDelay: '0ms'}}></div>
+               <div className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{animationDelay: '150ms'}}></div>
+               <div className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{animationDelay: '300ms'}}></div>
+             </div>
           </div>
         )}
+        <div ref={messagesEndRef} />
+      </main>
 
-      </div>
+      {/* Cart Drawer (Enhanced) */}
+      {isCartOpen && (
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <div 
+            className="absolute inset-0 bg-black/30 backdrop-blur-sm transition-opacity" 
+            onClick={() => setIsCartOpen(false)}
+          />
+          <div className="relative w-full max-w-sm bg-white h-full shadow-2xl flex flex-col animate-in slide-in-from-left duration-300">
+            <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gradient-to-b from-white to-gray-50">
+              <div>
+                <h2 className="font-black text-xl text-gray-900">سلة التسوق</h2>
+                <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                  <TrendingUp size={12} />
+                  {cart.length} منتجات مختارة
+                </p>
+              </div>
+              <button onClick={() => setIsCartOpen(false)} className="p-2.5 hover:bg-gray-100 rounded-xl transition-all">
+                <X className="text-gray-400" />
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
+              {cart.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-center text-gray-400">
+                  <ShoppingBag className="w-16 h-16 opacity-20 mb-4" />
+                  <p className="font-medium">السلة فارغة</p>
+                  <p className="text-xs mt-1">ابدأ بإضافة منتجات رائعة!</p>
+                </div>
+              ) : (
+                cart.map(item => (
+                  <div key={item.id} className="flex gap-3 bg-white p-3 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all">
+                    <div className="w-20 h-20 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0">
+                      <img src={item.image} alt="" className="w-full h-full object-cover" />
+                    </div>
+                    <div className="flex-1 flex flex-col justify-between">
+                      <div>
+                        <p className="text-sm font-bold text-gray-900 line-clamp-1">{item.name}</p>
+                        <p className="text-xs text-gray-500">{item.category}</p>
+                      </div>
+                      <div className="flex justify-between items-end mt-2">
+                        <span className="text-sm font-bold">{item.price} ر.س</span>
+                        <div className="flex items-center gap-2 bg-gray-50 rounded-lg px-2 py-1 border border-gray-200">
+                          <button onClick={() => updateQty(item.id, -1)} className="text-gray-400 hover:text-red-500 transition-colors">
+                            <Minus size={14}/>
+                          </button>
+                          <span className="text-xs font-bold w-5 text-center">{item.qty}</span>
+                          <button onClick={() => updateQty(item.id, 1)} className="text-gray-400 hover:text-emerald-600 transition-colors">
+                            <Plus size={14}/>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => removeFromCart(item.id)}
+                      className="self-start p-1.5 hover:bg-red-50 rounded-lg transition-colors group"
+                    >
+                      <Trash2 size={16} className="text-gray-300 group-hover:text-red-500 transition-colors" />
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="p-6 bg-white border-t border-gray-100 shadow-2xl">
+              <div className="flex justify-between items-end mb-5">
+                <span className="text-gray-600 text-sm font-medium">الإجمالي الكلي</span>
+                <span className="font-black text-3xl text-gray-900">
+                  {calculateTotal()} 
+                  <span className="text-sm font-normal text-gray-400 mr-1">ر.س</span>
+                </span>
+              </div>
+              <button 
+                onClick={() => {
+                  setIsCartOpen(false);
+                  sendMessage("أريد إتمام الطلب والدفع");
+                }}
+                disabled={cart.length === 0}
+                className="w-full bg-gradient-to-r from-black to-gray-800 text-white py-4 rounded-2xl font-bold disabled:opacity-50 hover:shadow-2xl transition-all flex justify-between px-6 items-center active:scale-95"
+              >
+                <span>إتمام الشراء</span>
+                <CreditCard size={20} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Input Area (Enhanced) */}
+      <footer className="fixed bottom-0 left-0 right-0 p-4 z-40 bg-gradient-to-t from-white via-white to-transparent pb-6 pt-10">
+        <div className="max-w-3xl mx-auto relative flex items-center gap-3 bg-white p-2 rounded-full shadow-[0_10px_40px_rgb(0,0,0,0.1)] border-2 border-gray-100">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+            placeholder="اكتب رسالتك... (مثال: أرني الساعات الفاخرة)"
+            className="flex-1 bg-transparent text-gray-900 placeholder-gray-400 px-5 py-3 focus:outline-none text-base"
+            disabled={isLoading}
+          />
+          <button 
+            onClick={() => sendMessage()} 
+            disabled={!input.trim() || isLoading}
+            className="bg-gradient-to-r from-black to-gray-800 text-white w-12 h-12 flex items-center justify-center rounded-full hover:scale-105 disabled:opacity-50 disabled:scale-100 transition-all shadow-lg"
+          >
+            {isLoading ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} className="ml-0.5" />}
+          </button>
+        </div>
+      </footer>
     </div>
   );
 }
