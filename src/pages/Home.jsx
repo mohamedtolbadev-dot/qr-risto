@@ -53,13 +53,13 @@ const Home = () => {
       {/* الأيقونات الاجتماعية الثابتة على اليسار */}
       <SocialSidebar />
 
-      {/* --- Section 1: Restaurant Profile (Enhanced) --- */}
+      {/* --- Section 1: Restaurant Profile (Enhanced + Opening Hours) --- */}
 <div className="relative w-full mb-8 md:mb-16">
 
   {/* Cover Photo */}
   <div className="relative w-full h-[35vh] sm:h-[40vh] md:h-[50vh] overflow-hidden">
     <img
-      src="https://images.unsplash.com/photo-1541518763669-27fef04b14ea?q=80&w=1600"
+      src="https://cdn.youcan.shop/stores/980bd1d3766222ef4184b517eba9d88a/products/DiHYloqoyt7soiqUcryEg9wDmRwr2iamZmXPZuSH_lg.jpg"
       alt="Restaurant Cover"
       className="w-full h-full object-cover"
     />
@@ -75,7 +75,7 @@ const Home = () => {
         <div className="relative flex-shrink-0">
           <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 rounded-full border-8 border-white shadow-xl overflow-hidden">
             <img
-              src="https://cdn.youcan.shop/stores/980bd1d3766222ef4184b517eba9d88a/products/DiHYloqoyt7soiqUcryEg9wDmRwr2iamZmXPZuSH_lg.jpg"
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7P9RA3o4VO0WIcHUtducAPCXGQqkH0tWlwQ&s"
               alt="Restaurant Logo"
               className="w-full h-full object-cover"
             />
@@ -83,16 +83,19 @@ const Home = () => {
           {/* Verified Badge */}
           <div className="absolute bottom-2 right-2 bg-orange-500 rounded-full p-2 shadow-md">
             <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
             </svg>
           </div>
         </div>
 
         {/* Restaurant Info */}
-        <div className="flex-1 text-center md:text-right">
+        <div className="flex-1 text-center md:text-right space-y-3">
+
           {/* Name & Badge */}
-          <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900">مطعم الزاوية</h1>
+          <div className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start gap-2 md:gap-3">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900">
+              مطعم الزاوية
+            </h1>
             <span className="inline-flex items-center gap-1 bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs sm:text-sm font-bold">
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
@@ -102,22 +105,40 @@ const Home = () => {
           </div>
 
           {/* Description */}
-          <p className="text-gray-600 text-base sm:text-lg mb-4 font-medium">
+          <p className="text-gray-600 text-base sm:text-lg font-medium">
             أصالة المطبخ المغربي 🇲🇦 | مطعم تقليدي في قلب فاس
           </p>
 
           {/* Stats */}
-          <div className="flex items-center justify-center md:justify-start gap-4 sm:gap-6 text-sm sm:text-base text-gray-500">
+          <div className="flex flex-col sm:flex-row items-center sm:items-center justify-center md:justify-start gap-2 sm:gap-6 text-sm sm:text-base text-gray-500">
             <div className="flex items-center gap-2">
               <svg className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
               </svg>
               <span className="font-semibold">4.8</span>
             </div>
-            <span className="text-gray-300">•</span>
+            <span className="text-gray-300 hidden sm:inline">•</span>
             <span className="font-medium">500+ طلب</span>
-            <span className="text-gray-300">•</span>
-            <span className="font-medium">مفتوح الآن</span>
+            <span className="text-gray-300 hidden sm:inline">•</span>
+            <span className="font-medium text-green-600">مفتوح الآن</span>
+          </div>
+
+          {/* Opening Hours */}
+          <div className="mt-2 flex flex-col sm:flex-row items-center md:items-start justify-center md:justify-start gap-4 text-gray-500 text-sm sm:text-base">
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 8v5l4 2"/>
+                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none"/>
+              </svg>
+              <span>الإثنين - الجمعة: 09:00 - 22:00</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 8v5l4 2"/>
+                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none"/>
+              </svg>
+              <span>السبت - الأحد: 10:00 - 23:00</span>
+            </div>
           </div>
 
         </div>
