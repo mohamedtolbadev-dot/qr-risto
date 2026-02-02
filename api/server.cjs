@@ -1,14 +1,14 @@
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
-require('dotenv').config();
-
+// ملاحظة: في Vercel لا نحتاج dotenv بالشكل التقليدي، سنضيف المتغيرات في لوحة التحكم
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
 app.post('/api/send-whatsapp', async (req, res) => {
-  const { phone, message, orderDetails } = req.body;
+  const { phone, message } = req.body;
 
   try {
     const instanceId = process.env.ULTRAMSG_INSTANCE_ID;
@@ -23,24 +23,19 @@ app.post('/api/send-whatsapp', async (req, res) => {
       }
     );
 
-    console.log('✅ WhatsApp sent:', response.data);
-
     res.json({
       success: true,
-      messageId: response.data.id,
-      status: response.data
+      messageId: response.data.id
     });
 
   } catch (error) {
     console.error('❌ Error:', error.response?.data || error.message);
     res.status(500).json({
       success: false,
-      error: 'فشل الإرسال'
+      error: 'فشل إرسال الطلب عبر واتساب'
     });
   }
 });
 
-const PORT = 3001;
-app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
-});
+// تصدير التطبيق ليعمل كـ Serverless Function
+module.exports = app;
