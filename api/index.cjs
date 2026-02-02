@@ -4,37 +4,47 @@ const cors = require('cors');
 
 const app = express();
 
+// إعدادات CORS مهمة جداً عند الرفع
 app.use(cors());
 app.use(express.json());
 
-// مسار الفحص - تأكد أنه سيرسل استجابة واضحة
-app.get('/api/send-whatsapp', (req, res) => {
-    return res.status(200).send("API is Live and Running!");
-});
-
 app.post('/api/send-whatsapp', async (req, res) => {
+    const { phone, message } = req.body;
+
+    // التأكد من وجود المتغيرات
+    const instanceId = process.env.ULTRAMSG_INSTANCE_ID;
+    const token = process.env.ULTRAMSG_TOKEN;
+
+    if (!instanceId || !token) {
+        return res.status(500).json({
+            success: false,
+            error: 'Environment variables are missing on Vercel'
+        });
+    }
+
     try {
-        const { phone, message } = req.body;
-        const instanceId = process.env.ULTRAMSG_INSTANCE_ID;
-        const token = process.env.ULTRAMSG_TOKEN;
-
-        if (!instanceId || !token) {
-            return res.status(500).json({ success: false, error: "Missing Env Vars" });
-        }
-
         const response = await axios.post(
             `https://api.ultramsg.com/${instanceId}/messages/chat`,
-            { token, to: phone, body: message }
+            {
+                token: token,
+                to: phone,
+                body: message
+            }
         );
 
-        return res.json({ success: true, data: response.data });
+        return res.json({
+            success: true,
+            data: response.data
+        });
+
     } catch (error) {
-        return res.status(500).json({ 
-            success: false, 
-            error: error.response?.data || error.message 
+        console.error('❌ UltraMsg Error:', error.response?.data || error.message);
+        return res.status(500).json({
+            success: false,
+            error: 'فشل إرسال الرسالة من مزود الخدمة'
         });
     }
 });
 
-// هذا السطر هو الأهم للعمل على Vercel
+// هذا السطر مهم جداً لـ Vercel
 module.exports = app;
