@@ -4,21 +4,25 @@ const cors = require('cors');
 
 const app = express();
 
-// إعدادات CORS مهمة جداً عند الرفع
+// إعدادات CORS للسماح لطلبات الـ Frontend بالوصول
 app.use(cors());
 app.use(express.json());
+
+// مسار للفحص (Health Check) - افتحه في المتصفح للتأكد
+app.get('/api/send-whatsapp', (req, res) => {
+    res.json({ message: "Server is online! Use POST to send messages." });
+});
 
 app.post('/api/send-whatsapp', async (req, res) => {
     const { phone, message } = req.body;
 
-    // التأكد من وجود المتغيرات
     const instanceId = process.env.ULTRAMSG_INSTANCE_ID;
     const token = process.env.ULTRAMSG_TOKEN;
 
     if (!instanceId || !token) {
         return res.status(500).json({
             success: false,
-            error: 'Environment variables are missing on Vercel'
+            error: 'Environment variables (ID or Token) are missing'
         });
     }
 
@@ -46,5 +50,5 @@ app.post('/api/send-whatsapp', async (req, res) => {
     }
 });
 
-// هذا السطر مهم جداً لـ Vercel
+// هام جداً: لا تستخدم app.listen
 module.exports = app;
