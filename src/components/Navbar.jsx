@@ -25,28 +25,7 @@ const Icons = {
 const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 shadow-lg">
-      {/* الشريط العلوي - معلومات إضافية (Black Bar) */}
-      <div className="bg-gray-900 text-gray-400 py-2 border-b border-white/5">
-        <div className="container mx-auto px-5 flex justify-between items-center text-[11px] font-bold uppercase tracking-wider">
-          <div className="flex gap-4 md:gap-8">
-            <div className="flex items-center gap-2">
-              <span className="text-orange-500"><Icons.Clock /></span>
-              <span>12:00 PM - 11:30 PM</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-orange-500"><Icons.MapPin /></span>
-              <span>فاس، شارع الجيش الملكي</span>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-4 border-r border-white/10 pr-4">
-            <a href={restaurantInfo.facebook} className="hover:text-white transition-colors"><Icons.Facebook /></a>
-            <a href={restaurantInfo.instagram} className="hover:text-white transition-colors"><Icons.Instagram /></a>
-            <a href={restaurantInfo.maps} className="hover:text-white transition-colors"><Icons.GoogleMaps /></a>
-          </div>
-        </div>
-      </div>
-
+      
       {/* الشريط الرئيسي (Orange Bar) */}
       <nav 
         className="bg-orange-600 text-white relative py-3"

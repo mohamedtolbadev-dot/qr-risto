@@ -208,8 +208,8 @@ const CategoryFilter = ({ categories, activeCategory, onCategoryChange }) => {
         <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white/90 to-transparent pointer-events-none" />
       </div>
 
-      {/* Mobile View - زر الفلتر */}
-      <div className="md:hidden fixed bottom-6 right-6 z-50">
+      {/* Mobile View - زر الفلتر الثابت */}
+      <div className="md:hidden fixed bottom-20 right-6 z-50">
         <button
           onClick={() => setIsFilterOpen(true)}
           className="bg-orange-600 text-white p-4 rounded-full shadow-2xl hover:bg-orange-700 transition-all duration-300 hover:scale-110 active:scale-95"
