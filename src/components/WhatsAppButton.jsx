@@ -23,18 +23,11 @@ const Icons = {
     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
     </svg>
-  ),
-  Spinner: () => (
-    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-    </svg>
   )
 };
 
 const SidebarCart = ({ cart, onClearCart }) => {
   const navigate = useNavigate();
-  const [isSending, setIsSending] = useState(false);
   const [isOpen, setIsOpen] = useState(false); // حالة فتح/غلق السلة
 
   // إغلاق السلة عند الضغط على زر ESC
@@ -49,11 +42,11 @@ const SidebarCart = ({ cart, onClearCart }) => {
   const getTotalPrice = () => cart.reduce((total, item) => total + item.price * item.quantity, 0);
   const getTotalItems = () => cart.reduce((total, item) => total + item.quantity, 0);
 
-  const sendToWhatsApp = async () => {
+  const sendToWhatsApp = () => {
     if (cart.length === 0) return;
-    setIsSending(true);
 
-    let message = `*🍽️ طلب جديد من ${restaurantInfo.name}*\n\n`;
+    // 1. تجهيز نص الرسالة
+    let message = `*🍽️ طلب جديد من ${restaurantInfo.name || 'المطعم'}*\n\n`;
     message += `━━━━━━━━━━━━━━━━\n`;
     cart.forEach((item, index) => {
       message += `\n*${index + 1}. ${item.name}* (x${item.quantity})\n`;
@@ -62,55 +55,33 @@ const SidebarCart = ({ cart, onClearCart }) => {
     message += `\n━━━━━━━━━━━━━━━━\n`;
     message += `*💰 المجموع الكلي: ${getTotalPrice()} درهم*\n`;
     message += `📦 عدد العناصر: ${getTotalItems()}\n`;
+    message += `\n📅 التاريخ: ${new Date().toLocaleDateString('ar-MA')} - ${new Date().toLocaleTimeString('ar-MA')}`;
 
-    try {
-      const response = await fetch('http://localhost:3001/api/send-whatsapp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          phone: restaurantInfo.phone,
-          message: message,
-          orderDetails: {
-            items: cart,
-            total: getTotalPrice(),
-            date: new Date().toISOString()
-          }
-        })
-      });
+    // 2. تشفير الرسالة لتناسب الرابط
+    const encodedMessage = encodeURIComponent(message);
+    
+    // 3. تنسيق رقم الهاتف (إزالة أي رموز غير رقمية)
+    // تأكد أن restaurantInfo.phone يحتوي على رمز الدولة (مثلاً 212xxxxxxxxx)
+    const phoneNumber = restaurantInfo.phone ? restaurantInfo.phone.replace(/[^0-9]/g, '') : ''; 
 
-      const contentType = response.headers.get("content-type");
-      let data;
-      if (contentType && contentType.includes("application/json")) {
-        data = await response.json();
-      } else {
-        const text = await response.text();
-        console.error('Non-JSON response:', text);
-        throw new Error('Backend returned invalid response');
-      }
+    // 4. إنشاء رابط واتساب
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 
-      if (response.ok && data.success) {
-        localStorage.setItem('lastOrder', JSON.stringify({
-          items: cart,
-          total: getTotalPrice(),
-          date: new Date().toISOString(),
-          messageSent: true
-        }));
-        onClearCart();
-        setIsOpen(false); // إغلاق السلة
-        navigate('/success');
-      } else {
-        alert(`حدث خطأ: ${data.error || 'يرجى المحاولة مرة أخرى'}`);
-      }
-    } catch (error) {
-      console.error('Error sending WhatsApp:', error);
-      if (error.message.includes('Failed to fetch')) {
-        alert('❌ لا يمكن الاتصال بالسيرفر. تأكد من تشغيل Backend');
-      } else {
-        alert('حدث خطأ في الاتصال.');
-      }
-    } finally {
-      setIsSending(false);
-    }
+    // 5. حفظ الطلب في LocalStorage (اختياري لعرضه في صفحة النجاح)
+    localStorage.setItem('lastOrder', JSON.stringify({
+      items: cart,
+      total: getTotalPrice(),
+      date: new Date().toISOString(),
+      messageSent: true
+    }));
+
+    // 6. فتح واتساب في نافذة جديدة
+    window.open(whatsappUrl, '_blank');
+
+    // 7. إفراغ السلة وإغلاقها وتوجيه المستخدم
+    onClearCart();
+    setIsOpen(false);
+    navigate('/success');
   };
 
   if (cart.length === 0) return null;
@@ -118,7 +89,6 @@ const SidebarCart = ({ cart, onClearCart }) => {
   return (
     <>
       {/* 1. زر الفتح العائم (Floating Trigger Button) */}
-      {/* يظهر فقط عندما تكون السلة مغلقة */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
@@ -135,7 +105,6 @@ const SidebarCart = ({ cart, onClearCart }) => {
       )}
 
       {/* 2. الخلفية المظللة (Overlay) */}
-      {/* تظهر عند فتح السلة لتغطية باقي الموقع */}
       <div 
         className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-50 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         onClick={() => setIsOpen(false)}
@@ -212,11 +181,10 @@ const SidebarCart = ({ cart, onClearCart }) => {
           <div className="space-y-3">
             <button
               onClick={sendToWhatsApp}
-              disabled={isSending}
-              className="w-full bg-[#25D366] hover:bg-[#1faa53] text-white py-3.5 rounded-xl font-bold shadow-lg shadow-green-100 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+              className="w-full bg-[#25D366] hover:bg-[#1faa53] text-white py-3.5 rounded-xl font-bold shadow-lg shadow-green-100 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
             >
-              {isSending ? <Icons.Spinner /> : <Icons.WhatsApp />}
-              <span>إتمام الطلب عبر واتساب</span>
+              <Icons.WhatsApp />
+              <span>إرسال الطلب عبر واتساب</span>
             </button>
             
             <button
