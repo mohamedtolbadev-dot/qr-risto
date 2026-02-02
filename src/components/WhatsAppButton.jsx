@@ -55,19 +55,26 @@ const SidebarCart = ({ cart, onClearCart }) => {
     message += `\n━━━━━━━━━━━━━━━━\n`;
     message += `*💰 المجموع الكلي: ${getTotalPrice()} درهم*\n`;
     message += `📦 عدد العناصر: ${getTotalItems()}\n`;
-    message += `\n📅 التاريخ: ${new Date().toLocaleDateString('ar-MA')} - ${new Date().toLocaleTimeString('ar-MA')}`;
+    message += `\n📅 التاريخ: ${new Date().toLocaleDateString('ar-MA')} - ${new Date().toLocaleTimeString('ar-MA')}\n`;
+
+    // --- إضافة رابط التقييم ورسالة العودة ---
+    message += `\n━━━━━━━━━━━━━━━━\n`;
+    message += `⭐ *رأيك يهمنا!*\n`;
+    message += `يرجى العودة للرابط التالي لتقييمنا على Google:\n`;
+    message += `https://qr-risto.vercel.app/success\n`; 
+    message += `\nشكراً لثقتكم ❤️`;
+    // --------------------------------------
 
     // 2. تشفير الرسالة لتناسب الرابط
     const encodedMessage = encodeURIComponent(message);
     
     // 3. تنسيق رقم الهاتف (إزالة أي رموز غير رقمية)
-    // تأكد أن restaurantInfo.phone يحتوي على رمز الدولة (مثلاً 212xxxxxxxxx)
     const phoneNumber = restaurantInfo.phone ? restaurantInfo.phone.replace(/[^0-9]/g, '') : ''; 
 
     // 4. إنشاء رابط واتساب
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 
-    // 5. حفظ الطلب في LocalStorage (اختياري لعرضه في صفحة النجاح)
+    // 5. حفظ الطلب في LocalStorage
     localStorage.setItem('lastOrder', JSON.stringify({
       items: cart,
       total: getTotalPrice(),
@@ -78,7 +85,7 @@ const SidebarCart = ({ cart, onClearCart }) => {
     // 6. فتح واتساب في نافذة جديدة
     window.open(whatsappUrl, '_blank');
 
-    // 7. إفراغ السلة وإغلاقها وتوجيه المستخدم
+    // 7. إفراغ السلة وإغلاقها وتوجيه المستخدم لصفحة النجاح
     onClearCart();
     setIsOpen(false);
     navigate('/success');
@@ -88,7 +95,7 @@ const SidebarCart = ({ cart, onClearCart }) => {
 
   return (
     <>
-      {/* 1. زر الفتح العائم (Floating Trigger Button) */}
+      {/* 1. زر الفتح العائم */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
@@ -104,18 +111,18 @@ const SidebarCart = ({ cart, onClearCart }) => {
         </button>
       )}
 
-      {/* 2. الخلفية المظللة (Overlay) */}
+      {/* 2. الخلفية المظللة */}
       <div 
         className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-50 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         onClick={() => setIsOpen(false)}
       />
 
-      {/* 3. القائمة الجانبية (Left Sidebar) */}
+      {/* 3. القائمة الجانبية */}
       <div 
         className={`fixed top-0 left-0 h-full w-full sm:w-[400px] bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         
-        {/* Header - رأس القائمة */}
+        {/* Header */}
         <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-white">
           <div className="flex items-center gap-3">
             <div className="bg-orange-100 text-orange-600 p-2 rounded-lg">
@@ -134,11 +141,10 @@ const SidebarCart = ({ cart, onClearCart }) => {
           </button>
         </div>
 
-        {/* Body - قائمة المنتجات (Scrollable) */}
+        {/* Body */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50">
           {cart.map((item) => (
             <div key={item.id} className="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex gap-3 animate-fade-in">
-              {/* صورة المنتج المصغرة (إذا وجدت) */}
               <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                  <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
               </div>
@@ -153,7 +159,6 @@ const SidebarCart = ({ cart, onClearCart }) => {
                   <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-md">
                      الكمية: {item.quantity}
                   </span>
-                  {/* السعر الإفرادي */}
                   <span className="text-[10px] text-gray-400">
                     {item.price} DH / للقطعة
                   </span>
@@ -163,9 +168,8 @@ const SidebarCart = ({ cart, onClearCart }) => {
           ))}
         </div>
 
-        {/* Footer - الجزء السفلي الثابت */}
+        {/* Footer */}
         <div className="bg-white border-t border-gray-100 p-6 shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
-          {/* الملخص المالي */}
           <div className="space-y-2 mb-4">
             <div className="flex justify-between text-gray-600">
               <span>المجموع الفرعي</span>
@@ -177,7 +181,6 @@ const SidebarCart = ({ cart, onClearCart }) => {
             </div>
           </div>
 
-          {/* أزرار التحكم */}
           <div className="space-y-3">
             <button
               onClick={sendToWhatsApp}
